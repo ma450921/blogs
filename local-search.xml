@@ -4,13 +4,85 @@
   
   
   <entry>
-    <title>Hello World</title>
-    <link href="/2020/08/10/hello-world/"/>
-    <url>/2020/08/10/hello-world/</url>
+    <title>使用latex来书写数学公式2 —— latex数学公式</title>
+    <link href="/2020/08/11/latexlearning2/"/>
+    <url>/2020/08/11/latexlearning2/</url>
     
-    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span></code></pre><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre><code class="hljs bash">$ hexo server</code></pre><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre><code class="hljs bash">$ hexo generate</code></pre><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre><code class="hljs bash">$ hexo deploy</code></pre><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+    <content type="html"><![CDATA[<h2 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h2><p>LATEX 使用一种特有的模式来排版数学(mathematics) 公式。数学公式允许以 行间形式排版在一个段落之中，也可以以独立形式排版，此时段落可能会被拆 开。处于段内的数学文本要放在 <code>\(</code> 与<code>\)</code> 之间，$ 与$ 之间，或者<code>\begin&#123;math&#125;</code> 与 <code>\end&#123;math&#125;</code> 之间。</p><p>例如<code>c^&#123;2&#125;=a^&#123;2&#125;+b^&#123;2&#125;</code>经过latex转换为公式：</p><script type="math/tex; mode=display">c^{2}=a^{2}+b^{2}</script><p><code>100 m^&#123;3&#125;  \heartsuit</code>转换为：</p><script type="math/tex; mode=display">100 m^{3} \heartsuit</script><script type="math/tex; mode=display">\lim_{n \to \infty} \sum_{k=1}^n \frac{1}{k^2} = \frac{\pi^2}{6}</script>]]></content>
     
     
+    <categories>
+      
+      <category>latex</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>latex</tag>
+      
+      <tag>排版</tag>
+      
+      <tag>论文写作</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>计算机图形学1 —— 图形变换矩阵</title>
+    <link href="/2020/08/10/ComputerGraphics1/"/>
+    <url>/2020/08/10/ComputerGraphics1/</url>
+    
+    <content type="html"><![CDATA[<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>在图形学中，图形位置形态的数学定义是坐标中的一个个坐标点的集合，因此图形的变换操作通过数学计算来进行。为了简化计算思路，通常我们会将这些变化通过线性代数的方式抽象为变换矩阵 (Transformation Marices)。一切物体的缩放，旋转，位移，都可以通过变换矩阵作用得到。当我们确定好了某种变化的变换矩阵后，可以将其应用在任何其他图形上。本文将介绍基本图形变化中如何利用变换矩阵来进行图形变换。</p><h2 id="2D线性变换"><a href="#2D线性变换" class="headerlink" title="2D线性变换"></a>2D线性变换</h2><p>在2D图形中，我们规定 $[x, y]^T$ 为图形上的任意一个点（也可以看作是一个二维向量），2D基于原点的线性变化可以被定义为向量 $[x, y]^T$ 左乘变换矩阵的数学表示：</p><script type="math/tex; mode=display">\begin{bmatrix} a_{11} & a_{12}\\ a_{21} & a_{22}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=\begin{bmatrix} a_{11}x & a_{12}y\\ a_{21}x & a_{22}y\end{bmatrix}</script><h3 id="缩放（scale）"><a href="#缩放（scale）" class="headerlink" title="缩放（scale）"></a>缩放（scale）</h3><p>缩放操作是将图形中所有点的坐标整体放大或者缩小某个数值，如下图所示的变换分别将$x, y$分别缩小了0.5:</p><p><img src="/images/graphics1/graphics1_scale.png" alt=""><br>$[x, y]^T$经过变换后表示为$[x\prime, y\prime]^T$，经过变化后的值可以表示为：</p><script type="math/tex; mode=display">x\prime = 0.5 \times x + 0 \times y</script><script type="math/tex; mode=display">y\prime = 0 \times x + 0.5 \times y</script><p>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">scale(s_x, s_y)= \begin{bmatrix} s_x & 0\\ 0 & s_y\end{bmatrix}</script><h3 id="剪切（Shear）"><a href="#剪切（Shear）" class="headerlink" title="剪切（Shear）"></a>剪切（Shear）</h3><p>剪切变换可以简单理解为将图形的一段固定，将其对端沿着固定方向拉动。以固定x轴为例：<br><img src="/images/graphics1/graphics1_shear.png" alt=""><br>所有点的$y$值保持不变，x坐标加上了对应的y值，经过变化后的值表示为：</p><script type="math/tex; mode=display">x\prime =  x + 1 \times y</script><script type="math/tex; mode=display">y\prime = 0 \times x + y</script><p>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">shearX(s)= \begin{bmatrix} 1 & s\\ 0 & 1\end{bmatrix}</script><script type="math/tex; mode=display">shearY(s)= \begin{bmatrix} 1 & 0\\ s & 1\end{bmatrix}</script><h3 id="翻转（reflection）"><a href="#翻转（reflection）" class="headerlink" title="翻转（reflection）"></a>翻转（reflection）</h3><p>翻转一般是通过将某个坐标轴的所有值取反得到的，其变换矩阵可以表示为：<br>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">reflectionY= \begin{bmatrix} -1 & 0\\ 0 & 1\end{bmatrix}</script><script type="math/tex; mode=display">reflectionX= \begin{bmatrix} 1 & 0\\ 0 & -1\end{bmatrix}</script><h3 id="旋转（rotate）"><a href="#旋转（rotate）" class="headerlink" title="旋转（rotate）"></a>旋转（rotate）</h3><p>旋转的几何意义很容易理解，图形绕着原点逆时针旋转，但是数学上的变换关系并没有上述几种变换直观。为了便于理解，我们先假定图形中的一个任意向量$\vec{a}$，它与x轴的夹角为$\alpha$，坐标为$[x_a, y_a]$。向量的长度表示为$r^2 = x_a^2 + y_a^2$，因此其坐标可以表示为：</p><script type="math/tex; mode=display">x_a = rcos\alpha</script><script type="math/tex; mode=display">y_a = rsin\alpha</script><p>当$\vec{a}$旋转了任意角度$\varphi$之后得到$\vec{b}$，此时$\vec{b}$与x轴的夹角为$(\alpha + \varphi$)$，坐标为$[x_a, y_a]$被表示为：</p><script type="math/tex; mode=display">x_b = rcos(\alpha + \varphi) = rcos\alpha cos\varphi - rsin\alpha sin\varphi</script><script type="math/tex; mode=display">y_b = rsin(\alpha + \varphi) = rsin\alpha cos\varphi + r sin\alpha sin\varphi</script><p>根据$x_a = rcos\alpha$以及$y_a = rsin\alpha$我们可以化简得到：</p><script type="math/tex; mode=display">x_b = x_a cos\varphi - y_a sin\varphi</script><script type="math/tex; mode=display">y_b = y_a cos\varphi + x_a sin\varphi</script><p>变换矩阵可以表示为：</p><script type="math/tex; mode=display">rotate(\varphi) = \begin{bmatrix} cos\varphi & -sin\varphi\\ sin\varphi & cos\varphi\end{bmatrix}</script>]]></content>
+    
+    
+    <categories>
+      
+      <category>GAMES101</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机图形学</tag>
+      
+      <tag>线性代数</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>使用latex来书写数学公式1 —— latex基础知识</title>
+    <link href="/2020/08/10/latexlearning1/"/>
+    <url>/2020/08/10/latexlearning1/</url>
+    
+    <content type="html"><![CDATA[<h2 id="TEX-amp-amp-LATEX"><a href="#TEX-amp-amp-LATEX" class="headerlink" title="TEX &amp;&amp; LATEX"></a>TEX &amp;&amp; LATEX</h2><p>TEX 是Donald E. Knuth 编写的一个以排版文章及数学公式为目标的计算机程序。1977 年，在意识到恶劣的排版质量正在影响自己的著作及文章后，Knuth 开始编写TEX 排版系统引擎，探索当时开始进入出版工业的数字印刷设备的潜 力，尤为希望能扭转排版质量下滑的这一趋势。我们现在使用的TEX 系统发布于 1982 年，在 1989 年又稍做改进，增加了对 8 字节字符及多语言的支持。TEX 以其卓越的稳定性、可在不同类型的电脑上运行以及几乎没有缺陷而著称。TEX 的版本号不断趋近于 π，现在为 3.141592。</p><p>LATEX 是一个宏集，它使用一个预先定义好的专业版面，可以使作者们高质量的 排版和打印他们的作品。LATEX 最初由 Leslie Lamport 编写，它使用 TEX 程序作为排版引擎。</p><h2 id="LATEX源文件"><a href="#LATEX源文件" class="headerlink" title="LATEX源文件"></a>LATEX源文件</h2><p>LATEX 源文件为普通的ASCII 文件，你可以使用任何文本编辑器来创建。LATEX 源文件不仅包含了要排版的文本，而且也包含了告诉LATEX 如何排版这些文本内 容的命令。</p><h3 id="空白"><a href="#空白" class="headerlink" title="空白"></a>空白</h3><p>空格和制表符等空白字符在LATEX 中被看作相同的空白距离(space)。多个连续 的空白字符等同于一个空白字符。在句首的空白距离一般会被忽略，单个空行也 被认为是一个“空白距离”。</p><p>两行文本间的空白行标志着上段的结束和下段的开始。多个空白行的作用 等同于一个空白行。下面便是一个例子，上边是源文件中的文本，下边是排版后的结果。</p><pre><code class="hljs latex">It does not matter whether you enter one or several    spaces after a word.An empty line starts a new paragraph.</code></pre><p><img src="/images/latex/latex1_graph1.png" alt=""></p><h3 id="特殊字符"><a href="#特殊字符" class="headerlink" title="特殊字符"></a>特殊字符</h3><p>下面的这些字符是 LATEX 中的保留字符(reserved characters)，它们或在LATEX 中 有特殊的意义，或不一定存在于所有字库中。如果你直接在文本中输入这些字符，通常它们不会被输出，而且还会导致 LATEX 做一些你不希望发生的事情。需要在这些字符前加上反斜线，它们才可以正常的输出到文档中。<br><pre><code class="hljs latex"># <span class="hljs-formula">$ % ^ &amp; _ &#123; &#125; <span class="hljs-tag">\<span class="hljs-name"> </span></span></span><span class="hljs-formula"></span><span class="hljs-formula">#添加反斜线可以输出到文档中</span><span class="hljs-formula"><span class="hljs-tag">\<span class="hljs-name">#</span></span> <span class="hljs-tag">\<span class="hljs-name">$</span></span> <span class="hljs-tag">\<span class="hljs-name">%</span></span> <span class="hljs-tag">\<span class="hljs-name">^</span><span class="hljs-string">&#123;&#125;</span></span> <span class="hljs-tag">\<span class="hljs-name">&amp;</span></span> <span class="hljs-tag">\<span class="hljs-name">_</span></span> <span class="hljs-tag">\<span class="hljs-name">&#123;</span></span> <span class="hljs-tag">\<span class="hljs-name">&#125;</span></span> <span class="hljs-tag">\<span class="hljs-name">&#123;</span></span>&#125;</span></code></pre></p><h3 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h3><p>ATEX 命令(commands) 是大小写敏感的，有以下两种格式:</p><ul><li>以一个反斜线(backslash)\开始，命令名只由字母组成。命令名后的空格 符、数字或任何非字母的字符都标志着该命令的结束。</li><li>由一个反斜线和非字母的字符组成。</li></ul><p>LATEX 忽略命令之后的空白字符。如果你希望在命令后得到一个空格，可以 在命令后加上{} 和一个空格，或加上一个特殊的空格命令。{} 将阻止LATEX 吃掉命令后的所有空格。<br><pre><code class="hljs latex">I read that Knuth divides the  people working with <span class="hljs-tag">\<span class="hljs-name">TeX</span><span class="hljs-string">&#123;&#125;</span></span> into <span class="hljs-tag">\<span class="hljs-name">TeX</span><span class="hljs-string">&#123;&#125;</span></span>nicians and <span class="hljs-tag">\<span class="hljs-name">TeX</span></span> perts.<span class="hljs-tag">\<span class="hljs-name">\</span></span> Today is <span class="hljs-tag">\<span class="hljs-name">today</span></span>. </code></pre><br><img src="/images/latex/latex1_graph2.png" alt=""></p><p>有些命令需要一个参数(parameter)，该参数用花括号(curly braces) { } 括 住并写在命令的后面。一些命令支持可选参数(optional parameters)，可选参数可用方括号(square brackets) [ ] 括住，然后写在命令的后面。</p><pre><code class="hljs latex">You can <span class="hljs-tag">\<span class="hljs-name">textsl</span><span class="hljs-string">&#123;lean&#125;</span></span> on me!</code></pre><p><img src="/images/latex/latex1_graph3.png" alt=""></p><h3 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h3><p>当LATEX 处理一个源文件时，如果遇到一个百分号%，LATEX 将忽略%后的该行内容，换行符以及下一行前的空白字符。</p><p>我们可以据此在源文件中写一些注释，而且这些注释并不会出现在最后的排版结果中。</p><pre><code class="hljs latex">This is an <span class="hljs-comment">% stupid</span><span class="hljs-comment">% Better: instructive &lt;---- example: Supercal%</span>              ifragilist<span class="hljs-comment">%</span>    icexpialidocious</code></pre><p><img src="/images/latex/latex1_graph4.png" alt=""></p><p>如果注释的内容较长，你可以使用verbatim 宏包提供的comment环境。<br><pre><code class="hljs latex">This is another <span class="hljs-tag">\<span class="hljs-name">begin</span><span class="hljs-string">&#123;comment&#125;</span></span>rather stupid,but helpful<span class="hljs-tag">\<span class="hljs-name">end</span><span class="hljs-string">&#123;comment&#125;</span></span>example for embedding comments in your document.</code></pre><br><img src="/images/latex/latex1_graph5.png" alt=""></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>latex</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>latex</tag>
+      
+      <tag>排版</tag>
+      
+      <tag>论文写作</tag>
+      
+    </tags>
     
   </entry>
   
