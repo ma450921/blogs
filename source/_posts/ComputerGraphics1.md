@@ -103,17 +103,18 @@ reflectionX
  0 & -1
 \end{bmatrix} 
 $$
-
+以X轴翻转为例，经过变化矩阵计算后，图形变换如下：
+![](/images/graphics1/graphics1_reflection.png)
 
 ### 旋转（rotate）
-旋转的几何意义很容易理解，图形绕着原点逆时针旋转，但是数学上的变换关系并没有上述几种变换直观。为了便于理解，我们先假定图形中的一个任意向量$\vec{a}$，它与x轴的夹角为$\alpha$，坐标为$[x_a, y_a]$。向量的长度表示为$r^2 = x_a^2 + y_a^2$，因此其坐标可以表示为：
+旋转的几何意义很容易理解，图形绕着原点逆时针旋转，但是数学上的变换关系并没有上述几种变换直观。为了便于理解，我们先假定图形中的一个任意向量 $\vec{a}$ ，它与x轴的夹角为$\alpha$，坐标为 $[x_a, y_a]$ 。向量的长度表示为  $r^2 = x_a^2 + y_a^2$ ，因此其坐标可以表示为：
 $$
 x_a = rcos\alpha
 $$
 $$
 y_a = rsin\alpha
 $$
-当$\vec{a}$旋转了任意角度$\varphi$之后得到$\vec{b}$，此时$\vec{b}$与x轴的夹角为$(\alpha + \varphi$)$，坐标为$[x_a, y_a]$被表示为：
+当 $\vec{a}$ 旋转了任意角度 $\varphi$ 之后得到 $\vec{b}$，此时 $\vec{b}$ 与x轴的夹角为 $(\alpha + \varphi)$，坐标为$[x_b, y_b]$ 被表示为：
 $$
 x_b = rcos(\alpha + \varphi) = rcos\alpha cos\varphi - rsin\alpha sin\varphi
 $$
@@ -135,5 +136,75 @@ rotate(\varphi) =
 \begin{bmatrix}
  cos\varphi & -sin\varphi\\
  sin\varphi & cos\varphi
+\end{bmatrix} 
+$$
+
+举一个简单的旋转的例子，让图形逆时针旋转$\pi/4$，变换矩阵的值为：
+$$
+\begin{bmatrix}
+cos\varphi & -sin\varphi\\
+sin\varphi & cos\varphi
+\end{bmatrix}
+= 
+\begin{bmatrix}
+0.707 & -0.707\\
+0.707 & 0.707
+\end{bmatrix}
+$$
+图形坐标经过计算后的样式如下：
+![](/images/graphics1/graphics1_rotate.png)
+
+
+## 3D线性变换
+了解了2D线性变换之后，3D线性变换的推倒思路是一致的，仅仅是多增加了一个纬度的判断罢了。
+
+### 缩放、剪切、翻转
+3D缩放比较简单，直接通过2D缩放进行扩展：
+$$
+scale(s_x, s_y, s_z) = 
+\begin{bmatrix}
+s_x & 0 & 0\\
+0 & s_y & 0\\
+0 & 0 & s_z
+\end{bmatrix}
+$$
+3D剪切也可以通过2D剪切做类似的扩展：
+$$
+shearX(d_y, d_z) = 
+\begin{bmatrix}
+1 & d_y & d_z\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{bmatrix}
+$$
+
+3D的旋转稍稍复杂一点点，因为在3D场景下旋转可以是以原点为中心绕着任意轴进行旋转。在2D中是由x轴向y轴旋转，换算到3D空间中就是绕着z轴进行旋转(绕z轴，z的值不会发生变化，因此变换矩阵第三行没有变化)：
+$$
+rotateZ(\varphi) = 
+\begin{bmatrix}
+cos\varphi & -sin\varphi & 0\\
+sin\varphi & cos\varphi & 0\\
+0 & 0 & 1
+\end{bmatrix} 
+$$
+
+绕着x轴的旋转可以理解为在2D场景下的yz平面，由y轴转向z轴(x轴的数值没有变化所以，变换矩阵第一行没有变化)：
+$$
+rotateX(\varphi) = 
+\begin{bmatrix}
+1 & 0 & 0\\
+0 & cos\varphi & -sin\varphi\\
+0 & sin\varphi & cos\varphi
+\end{bmatrix} 
+$$
+
+
+绕着y轴的旋转可以理解为在2D场景下的xz平面，由z轴转向x轴(x轴的数值没有变化所以，变换矩阵第一行没有变化)：
+$$
+rotateY(\varphi) = 
+\begin{bmatrix}
+cos\varphi & 0 & sin\varphi\\
+0 & 1 & 0\\
+-sin\varphi & 0  & cos\varphi
 \end{bmatrix} 
 $$
