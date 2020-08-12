@@ -1,5 +1,5 @@
 ---
-title: 计算机图形学1 —— 图形变换矩阵
+title: 计算机图形学1 —— 线性变换
 tags: [计算机图形学, 线性代数]
 categories: [GAMES101]
 index_img: /images/graphics1/graphics1_banner.jpeg
