@@ -4,11 +4,50 @@
   
   
   <entry>
+    <title></title>
+    <link href="/2020/08/21/ComputerGraphics4/"/>
+    <url>/2020/08/21/ComputerGraphics4/</url>
+    
+    <content type="html"><![CDATA[<hr><p>title: 计算机图形学2 —— 光栅化<br>tags: [计算机图形学, 光栅化]<br>categories: [GAMES101]<br>index_img: /images/graphics2/graphics2_banner.jpeg<br>date: 2020-08-12 21:09:11</p><h2 id="math-true"><a href="#math-true" class="headerlink" title="math: true"></a>math: true</h2>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title></title>
+    <link href="/2020/08/16/ComputerGraphics5/"/>
+    <url>/2020/08/16/ComputerGraphics5/</url>
+    
+    <content type="html"><![CDATA[<hr><p>title: 计算机图形学2 —— 反走样和Z-Buffer算法<br>tags: [计算机图形学, 反走样]<br>categories: [GAMES101]<br>index_img: /images/graphics2/graphics2_banner.jpeg<br>date: 2020-08-12 21:09:11</p><h2 id="math-true"><a href="#math-true" class="headerlink" title="math: true"></a>math: true</h2>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title></title>
+    <link href="/2020/08/16/ComputerGraphics3/"/>
+    <url>/2020/08/16/ComputerGraphics3/</url>
+    
+    <content type="html"><![CDATA[<hr><p>title: 计算机图形学2 —— 视图变换<br>tags: [计算机图形学, 投影，视图变换]<br>categories: [GAMES101]<br>index_img: /images/graphics2/graphics2_banner.jpeg<br>date: 2020-08-12 21:09:11</p><h2 id="math-true"><a href="#math-true" class="headerlink" title="math: true"></a>math: true</h2>]]></content>
+    
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>计算机图形学2 —— 图形变换扩展</title>
     <link href="/2020/08/12/ComputerGraphics2/"/>
     <url>/2020/08/12/ComputerGraphics2/</url>
     
-    <content type="html"><![CDATA[<h2 id="线性变换的组合和分解"><a href="#线性变换的组合和分解" class="headerlink" title="线性变换的组合和分解"></a>线性变换的组合和分解</h2><h3 id="线性变换的组合"><a href="#线性变换的组合" class="headerlink" title="线性变换的组合"></a>线性变换的组合</h3><p>在前文我们提到，所有的线性变换都可以扩展成为变换矩阵左乘于源坐标点的数学表示。当对一个向量应用多次变换时的数学表示则是按照顺序分别左乘变换举证：</p><script type="math/tex; mode=display">first, v_2 = Sv_1, then, v_3 = Rv_2</script><p>可以被表示为：</p><script type="math/tex; mode=display">v_3 = R(Sv_1)</script><p>根据矩阵计算的结合律可以推倒为：</p><script type="math/tex; mode=display">v_3 = (RS)v_1</script><p>根据上面的推导可以发现一个规律，矩阵经过的两次变换$S$、$R$，可以表示为一次变换矩阵$M$，其中$M = RS$。其中矩阵乘法的顺序很重要。<br><img src="/images/graphics2/graphics2_compose.png" alt=""></p><h3 id="线性变换的分解"><a href="#线性变换的分解" class="headerlink" title="线性变换的分解"></a>线性变换的分解</h3><p>既然多个变换矩阵可以合并为同一个变换矩阵，那么一个变换矩阵也可以被分解为多个变换矩阵的乘积。利用矩阵分解知识我们知道，一个任意矩阵可以被分解为，正交矩阵与对角矩阵相乘的形式：</p><script type="math/tex; mode=display">A = RSR^T</script><p>其中R为正交矩阵，S为对角矩阵，</p><h3 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h3><h2 id="齐次线性坐标"><a href="#齐次线性坐标" class="headerlink" title="齐次线性坐标"></a>齐次线性坐标</h2>]]></content>
+    <content type="html"><![CDATA[<h2 id="线性变换的组合和分解"><a href="#线性变换的组合和分解" class="headerlink" title="线性变换的组合和分解"></a>线性变换的组合和分解</h2><h3 id="线性变换的组合"><a href="#线性变换的组合" class="headerlink" title="线性变换的组合"></a>线性变换的组合</h3><p>在前文我们提到，所有的线性变换都可以扩展成为变换矩阵左乘于源坐标点的数学表示。当对一个向量应用多次变换时的数学表示则是按照顺序分别左乘变换矩阵：</p><script type="math/tex; mode=display">first, v_2 = Sv_1, then, v_3 = Rv_2</script><p>可以被表示为：</p><script type="math/tex; mode=display">v_3 = R(Sv_1)</script><p>根据矩阵计算的结合律可以推导为：</p><script type="math/tex; mode=display">v_3 = (RS)v_1</script><p>根据上面的推导可以发现一个规律，矩阵经过的两次变换$S$、$R$，可以表示为一次变换矩阵$M$，其中$M = RS$。其中矩阵乘法的顺序很重要。<br><img src="/images/graphics2/graphics2_compose.png" alt=""></p><h3 id="线性变换的分解"><a href="#线性变换的分解" class="headerlink" title="线性变换的分解"></a>线性变换的分解</h3><p>既然多个变换矩阵可以合并为同一个变换矩阵，那么一个变换矩阵也可以被分解为多个变换矩阵的乘积。利用矩阵分解知识我们知道，对于给定 $A_{n*n}$ 的方阵，如果其具有n个线性无关的特征向量，那么可以被分解为，正交矩阵与对角矩阵相乘的形式，这个过程：</p><script type="math/tex; mode=display">A = RSR^T</script><p>其中 $R$ 为特征向量组成的正交矩阵，$S$ 为其特征值组成的对角矩阵。在$n=2$的情况下，$R$ 由其特征向量 $v_1, v_2$ 组成，$R = [v_1, v_2]$。$S$的对角值分别为其特征值 $\lambda_1$、$\lambda_2$。</p><p>根据其分解出的矩阵的特点，我们可以通过几何意义来对 $A$ 进行线性变换分解，$R$ 可以看作是一个旋转变换，$S$可以看作是缩放变换，因此原变换矩阵 $A$ 被分解为以下三个步骤：</p><ol><li>将其特征向量 $v_1$ 和 $v_2$ 旋转到 $x, y$轴上即变换矩阵 $R^T$。</li><li>将变换后的矩阵进行缩放，$x, y$ 方向分别被缩放 $(\lambda_1, \lambda_2)$ 即变换矩阵$S$。</li><li>将变换后的特征向量 $v_1$ 和 $v_2$ 旋转回原来的位置即变换矩阵 $R$<br><img src="/images/graphics2/graphics2_decompose.png" alt=""></li></ol><h3 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h3><p>前文中提到了绕 $x, y, z$轴旋转的变换矩阵，根据矩阵分解和组合的特性我们可以推倒出绕任意轴旋转的变换矩阵。绕任意轴旋转可以被分解为以下三步：</p><ol><li>通过旋转矩阵$R_1^T$将矩阵的特征向量旋转到</li></ol><h2 id="齐次线性坐标"><a href="#齐次线性坐标" class="headerlink" title="齐次线性坐标"></a>齐次线性坐标</h2>]]></content>
     
     
     <categories>
