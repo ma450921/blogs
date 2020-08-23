@@ -68,5 +68,113 @@ y_u & y_v & y_w\\
 z_u & z_v & z_w
 \end{bmatrix}
 $$
+下面证明上面的表达式为何能成立，假定$u = x_ux + y_uy + z_uz$，$v, w$同理，根据正交矩阵的特性，可以得到以下推倒：
+$$
+u  \cdot u = v \cdot v = w \cdot w = 1
+$$
+$$
+u \cdot v = v \cdot w = w \cdot u = 0
+$$
+利用这个特性，我们可以使用变换矩阵$R_{uvw}$将u变换到x轴上：
+$$
+R_{uvw}u = 
+\begin{bmatrix}
+x_u & x_v & x_w\\
+y_u & y_v & y_w\\
+z_u & z_v & z_w
+\end{bmatrix}
+\begin{bmatrix}
+x_u \\
+y_u \\
+z_u
+\end{bmatrix}
+= 
+\begin{bmatrix}
+x_ux_u + y_vy_v + z_wz_w\\
+x_vx_u + y_vy_u + z_vy_u\\
+x_wx_u + y_wy_u + z_wx_u
+\end{bmatrix}
+$$
+上式可以被化简为：
+$$
+R_{uvw}u = 
+\begin{bmatrix}
+u \cdot u\\
+v \cdot u\\
+w \cdot u
+= 
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+0 \\
+0
+\end{bmatrix}
+= 
+x
+$$
+同理可以推导出$R_{uvw}v = y$以及$R_{uvw}w = z$
+对于还原变换矩阵$R_{uvw}^T$同理也可以通过上述方式推导如何将坐标轴${x, y, z}$变换到$u, v, w$上去。
+总结来看，对于任意轴的旋转可以用下列公式进行表示：
+$$
+R_a = R_{uvw} R_x R_{uvw}^T = 
+\begin{bmatrix}
+x_u & y_u & z_u\\
+x_v & y_v & z_v\\
+x_w & y_w & z_w
+\end{bmatrix}
+\begin{bmatrix}
+cos\varphi & -sin\varphi & 0\\
+sin\varphi & cos\varphi & 0\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x_u & x_v & x_w\\
+y_u & y_v & y_w\\
+z_u & z_v & z_w
+\end{bmatrix}
+$$
 
-## 齐次线性坐标
+## 齐次坐标
+平移操作也是矩阵中经常会出现的情况，它变换后的坐标$x^\prime,y^\prime$可以很方便的通过公式表示:
+$$
+x^\prime = x + x_t
+$$
+$$
+y^\prime = y = y_t
+$$
+但是平移变换很难通过与待变换矩阵同纬度的变换矩阵来进行表示，因为它不属于线性变换。这里需要引入其次坐标的概念，通过原本是n维的向量用一个n+1维向量来表示。比如我们原有的平面中的点$(x, y)$升纬到3D表示为：$[x, y, 1]^T$，这样就可以将平移操作表示3D中的线性变换矩阵：
+$$
+\begin{bmatrix}
+m_{11} & m_{12} & x_t\\
+m_{21} & m_{22} & y_t\\
+0 & 0 & 1
+\end{bmatrix}
+$$
+此时再对$x^\prime,y^\prime$做计算，可以得到：
+$$
+\begin{bmatrix}
+x^\prime \\
+y^\prime \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+m_{11} & m_{12} & x_t\\
+m_{21} & m_{22} & y_t\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+= 
+\begin{bmatrix}
+m_{11}x + m_{12}y + x_t\\
+m_{21}x + m_{22}y + y_t\\
+1
+\end{bmatrix}
+$$
+
+**注：在其次坐标中最后一维取值为0时，代表一个方向，取值为1时代表一个点**
