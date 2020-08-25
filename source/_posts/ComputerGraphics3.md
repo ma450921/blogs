@@ -10,6 +10,5 @@ math: true
 1. 站好位置，摆好姿势（modal transform）
 2. 找好角度，调整相机位置（view transform）
 3. 拍摄照片，将3D场景拍摄到2D的照片（projection transform && viewport transformation）
-
-
+在拍照片的过程中我们模拟了视图变换的过程。
 
