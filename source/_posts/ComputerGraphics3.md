@@ -15,7 +15,7 @@ math: true
 
 ![](/images/graphics3/graphics3_transformation.png)
 
-## view/camera transform
+## 相机变换 view/camera transform
 结合在上一篇我们讨论的绕任意轴旋转的变换推导中，我们其实可以很容易使用类似的思路来进行推导相机变换。还记得为什么在相机变换的过程中，为什么除了看向方向（look-at direction）之外表示为$g$，还需要一个“向上”的方向$（up direction）表示为$t$，有了着两个方向以及相机的位置$e$。
 我们在根据坐标系法则就可以建立起一个三位坐标$u,v,w$。定义如下：
 $$
@@ -36,6 +36,7 @@ M_{view} = R_{view}T_{view}
 $$
 其中$R_{view}$是改变相机朝向的的变换矩阵，它的作用是使得$-Z$旋转到看向方向$u$，$Y$旋转到“向上“的方向$v$。$T_{view}$是移动相机位置的矩阵，是一个平移矩阵，可以被表示为：
 $$
+T_{view} =
 \begin{bmatrix}
 1 & 0 & 0 & -x_e\\
 0 & 1 & 0 & -y_e\\
@@ -43,6 +44,55 @@ $$
 0 & 0 & 0 & 1
 \end{bmatrix}
 $$
-## pojection transform
+旋转的过程在前面的章节有提过，如果需要使用$R_{uvw}$变换矩阵，因此
+M_{view}可以被表示为：
+$$
+M_{view} = 
 
-## viewport transform
+\begin{bmatrix}
+x_u & y_u & z_u & 0\\
+x_v & y_v & z_v & 0\\
+x_w & y_w & z_w & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 & 0 & -x_e\\
+0 & 1 & 0 & -y_e\\
+0 & 0 & 1 & -z_e\\
+0 & 0 & 0 & 1
+\end{bmatrix}
+$$
+## 投影变换 pojection transform
+投影变换的过程主要是将3D的点投影到2D的屏幕上来，根据变换条件的不同，可以将投影区分为正交投影和透视投影。如下图所示展现了两种投影的变换方式和成像结果。
+![](/images/graphics3/graphics3_banner.png)
+### 正交投影 Orthographic Projection Transformation
+正交投影很好理解，在正交投影之后图形中所有点的的相对位置都不会发生改变，可以将其看作直接将图形“压扁”，然后放置在某一平面上。
+![](/images/graphics3/graphic3_orthographic.png)
+在实际渲染过程中，我们总是希望在某个空间区域来渲染图形，而非根据整个视图区域来做渲染。
+
+$$
+x = l = left{\space}plane
+$$
+
+$$
+x = r = right{\space}plane
+$$
+
+$$
+y = v = bottom{\space}plane
+$$
+
+$$
+y = t = left{\space}plane
+$$
+
+$$
+z = n = near{\space}plane
+$$
+
+$$
+z = f = far{\space}plane
+$$
+
+### 透视投影 Perspective Projection Transformation
+
