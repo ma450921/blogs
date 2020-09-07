@@ -68,8 +68,7 @@ $$
 ### 正交投影 Orthographic Projection Transformation
 正交投影很好理解，在正交投影之后图形中所有点的的相对位置都不会发生改变，可以将其看作直接将图形“压扁”，然后放置在某一平面上。
 ![](/images/graphics3/graphic3_orthographic.png)
-在实际渲染过程中，我们总是希望在某个空间区域来渲染图形，而非根据整个视图区域来做渲染。
-
+在实际渲染过程中，我们总是希望在某个空间区域来渲染图形，而非根据整个视图区域来做渲染。假设渲染发生在一个沿着$Z$轴负方向，底面（bottom）与$XY$平面平行的一个立方体。这时候可以定义左右面（left, right）以及近远面（near, far），以及上下面（top, bottom）用以下代数表示：
 $$
 x = l = left{\space}plane
 $$
@@ -93,6 +92,25 @@ $$
 $$
 z = f = far{\space}plane
 $$
-
+简单来说，正交投影的主要原理是将上述区域变换到一个”正则、规范、标准“的立方体$[-1, 1]^3$中来。这个变换过程可以分解为两个变换：
+1. 将渲染盒子平移到以原点为中心的位置，即每个定点到投影平面的距离为 边长/2
+2. 将渲染盒子缩放为立方体$[-1, 1]^3$
+![](/images/graphics3/graphics3_orthographic_transform.png)
+这个过程可以用变换矩阵表示为：
+$$
+M_{ortho} = 
+\begin{bmatrix}
+\frac{2}{r - l} & 0 & 0 & 0\\
+0 & \frac{2}{t - b} & 0 & 0\\
+0 & 0 & \frac{2}{n - f} & 0\\
+0 & 0 & 0 & 1
+\end{bmatrix} 
+\begin{bmatrix}
+1 & 0 & 0 & -\frac{r+l}{2}\\
+0 & 1 & 0 & -\frac{t+b}{2}\\
+0 & 0 & 1 & -\frac{n+f}{2}\\
+0 & 0 & 0 & 1
+\end{bmatrix} 
+$$
 ### 透视投影 Perspective Projection Transformation
-
+透视投影和正交投影最大的区别在于，
