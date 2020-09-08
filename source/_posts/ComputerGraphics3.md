@@ -16,7 +16,7 @@ math: true
 ![](/images/graphics3/graphics3_transformation.png)
 
 ## 相机变换 view/camera transform
-结合在上一篇我们讨论的绕任意轴旋转的变换推导中，我们其实可以很容易使用类似的思路来进行推导相机变换。还记得为什么在相机变换的过程中，为什么除了看向方向（look-at direction）之外表示为$g$，还需要一个“向上”的方向$（up direction）表示为$t$，有了着两个方向以及相机的位置$e$。
+结合在上一篇我们讨论的绕任意轴旋转的变换推导中，我们其实可以很容易使用类似的思路来进行推导相机变换。还记得为什么在相机变换的过程中，为什么除了看向方向（look-at direction）之外表示为$g$，还需要一个“向上”的方向（up direction）表示为$t$，有了着两个方向以及相机的位置$e$。
 我们在根据坐标系法则就可以建立起一个三位坐标$u,v,w$。定义如下：
 $$
 w =  -\frac{g}{\left |\left | g \right |   \right | } 
@@ -29,12 +29,16 @@ $$
 $$
 v = w \times u
 $$
+
 ![](/images/graphics3/graphics3_camera.png)
 摄像机变换就可以看作将$x,y,z$坐标系转换到$u,v,w$坐标系的过程。我们将变换矩阵写作$M_{view}$，令
+
 $$
 M_{view} = R_{view}T_{view}
 $$
-其中$R_{view}$是改变相机朝向的的变换矩阵，它的作用是使得$-Z$旋转到看向方向$u$，$Y$旋转到“向上“的方向$v$。$T_{view}$是移动相机位置的矩阵，是一个平移矩阵，可以被表示为：
+
+其中$R$是改变相机朝向的的变换矩阵，它的作用是使得$-Z$旋转到看向方向$u$，$Y$旋转到“向上“的方向$v$。$T_{view}$是移动相机位置的矩阵，是一个平移矩阵，可以被表示为：
+
 $$
 T_{view} =
 \begin{bmatrix}
@@ -44,8 +48,9 @@ T_{view} =
 0 & 0 & 0 & 1
 \end{bmatrix}
 $$
-旋转的过程在前面的章节有提过，如果需要使用$R_{uvw}$变换矩阵，因此
-M_{view}可以被表示为：
+
+旋转的过程在前面的章节有提过，如果需要使用$R$变换矩阵，因此$M$可以被表示为：
+
 $$
 M_{view} = 
 
@@ -114,10 +119,164 @@ M_{ortho} =
 $$
 ### 透视投影 Perspective Projection Transformation
 透视投影和正交投影最大的区别在于，透视投影的过程不是“平行的”，投影的线最终会相交。因为透视投影需要实现真实的透视关系，也就是相等大小的物体，处于场景近端他会显示得更大，处于场景远端它会显示得更小。对于任意一点的投影过程可以用下图来表示：
+
 ![](/images/graphics3/graphic3_orthographic_point.png)
-对于任意点$[x, y, z]$, 经过透视投影变换后到投影平面上，形成$[x^{\prime}, y^{\prime}, z^{\prime}]$。根据相似三角形法则，对于$y^{\prime}$可以得到：
+
+对于任意点$[x, y, z]$, 经过透视投影变换后到投影平面上，形成$[x^{\prime}, y^{\prime}, z^{\prime}]$。图中的$z = -n$为投影平面，也就是我们的$near$面，假定$[x, y, z]$所在的与$XY$平面平行的面为$far$面。根据相似三角形法则，对于$y^{\prime}$可以得到：
 $$
 y^{\prime} = \frac{n}{z}y {\space}{\space}{\space}{\space}{\space}x^{\prime} = \frac{n}{z}x 
 $$
 
+为了推导投影矩阵，我们列出其原点和投影点的关系，当被投影点坐标全部乘以$z$的时候，被投影点坐标变化如下：
+$$
+ \begin{pmatrix}
+ x\\
+ y\\
+ z\\
+ 1
+\end{pmatrix}
+\Rightarrow 
 
+ \begin{pmatrix}
+ nx/z\\
+ ny/z\\
+ unknown\\
+ 1
+\end{pmatrix}
+==
+
+ \begin{pmatrix}
+ nx\\
+ ny\\
+ still{\space}unknown\\
+ z
+\end{pmatrix}
+$$
+
+因此我们想要求的投影矩阵是执行了如下变化：
+$$
+M_{persp{\to}ortho}^{4\times4}:
+{\space}
+\begin{pmatrix}
+ x\\
+ y\\
+ z\\
+ 1
+\end{pmatrix}
+==
+
+ \begin{pmatrix}
+ nx\\
+ ny\\
+ still{\space}unknown\\
+ z
+\end{pmatrix} 
+$$
+根据上面的变换过程我们可以将变换矩阵的确定项先写出来：
+$$
+M_{persp{\to}ortho}^{4\times4}=
+ \begin{bmatrix}
+ n & 0 & 0 & 0\\
+ 0 & n & 0 & 0\\
+ ? & ? & ? & ?\\
+ 0 & 0 & 0 &1 
+\end{bmatrix} 
+$$
+接下来就是如何确定不确定的这行的值了，在透视投影的可视空间中，发生透视变换后有两个特性：
+1. 所有在$near$面上的点，经过透视投影变换后其坐标值是不变的。
+2. 所有在$far$面上的点，经过透视投影变换后其$z$值是不变的。
+
+对于特性1，我们可以假定在near平面上的点$(x,y,n,1)^T$，经过变换之后，其坐标仍然保持不变。将所有坐标乘以$n$，得到：
+$$
+M_{persp{\to}ortho}^{4\times4}
+ \begin{pmatrix}
+ x\\
+ y\\
+ n\\
+ 1
+\end{pmatrix}
+\Rightarrow 
+
+\begin{pmatrix}
+ x\\
+ y\\
+ n\\
+ 1
+\end{pmatrix}
+==
+\begin{pmatrix}
+ nx\\
+ ny\\
+ n^2\\
+ n
+\end{pmatrix}
+$$
+通过上面的变换，我们可以得出一个结论——未知行额前两项必定为0，因为经过变换后的$z$值与$x,y$无关。因此假定最后一行为$(0,0,A,B)$，再计算第三行的乘法：
+$$
+\begin{pmatrix}
+ 0 {\space}
+ 0 {\space}
+ A {\space}
+ B 
+\end{pmatrix}
+\begin{pmatrix}
+ x \\
+ y \\
+ n \\
+ 1 
+\end{pmatrix}
+=
+n^2
+\Rightarrow 
+An + B = n^2
+$$
+同理，利用特性二所有在$far$平面上的点的$z$值不会发生变化：
+$$
+M_{persp{\to}ortho}^{4\times4}
+ \begin{pmatrix}
+ 0\\
+ 0\\
+ f\\
+ 1
+\end{pmatrix}
+\Rightarrow 
+
+\begin{pmatrix}
+ 0\\
+ 0\\
+ f\\
+ 1
+\end{pmatrix}
+==
+\begin{pmatrix}
+ 0\\
+ 0\\
+ f^2\\
+ f
+\end{pmatrix}
+
+\Rightarrow 
+Af + B = f^2
+$$
+
+联立两个等式，得到：
+$$
+A = f + n
+$$
+$$
+B = -nf
+$$
+因此变换矩阵$M_{persp{\to}ortho}^{4\times4}$的值为：
+$$
+M_{persp{\to}ortho}^{4\times4} =   
+\begin{bmatrix}
+ n & 0 & 0 & 0\\
+ 0 & n & 0 & 0\\
+ 0 & 0 & f+n & -nf \\
+ 0 & 0 & 0 &1 
+\end{bmatrix}  
+$$
+实际上，完成透视变换之后，再进行一次正交投影变换就彻底完成了以上透视投影变换：
+$$
+M_{persp} = M_{ortho}M_{persp{\to}ortho}
+$$
