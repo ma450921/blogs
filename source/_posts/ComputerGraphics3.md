@@ -113,4 +113,11 @@ M_{ortho} =
 \end{bmatrix} 
 $$
 ### 透视投影 Perspective Projection Transformation
-透视投影和正交投影最大的区别在于，
+透视投影和正交投影最大的区别在于，透视投影的过程不是“平行的”，投影的线最终会相交。因为透视投影需要实现真实的透视关系，也就是相等大小的物体，处于场景近端他会显示得更大，处于场景远端它会显示得更小。对于任意一点的投影过程可以用下图来表示：
+![](/images/graphics3/graphic3_orthographic_point.png)
+对于任意点$[x, y, z]$, 经过透视投影变换后到投影平面上，形成$[x^{\prime}, y^{\prime}, z^{\prime}]$。根据相似三角形法则，对于$y^{\prime}$可以得到：
+$$
+y^{\prime} = \frac{n}{z}y {\space}{\space}{\space}{\space}{\space}x^{\prime} = \frac{n}{z}x 
+$$
+
+
