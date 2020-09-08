@@ -4,39 +4,81 @@
   
   
   <entry>
-    <title></title>
-    <link href="/2020/08/21/ComputerGraphics4/"/>
-    <url>/2020/08/21/ComputerGraphics4/</url>
+    <title>计算机图形学5</title>
+    <link href="/2020/08/30/ComputerGraphics5/"/>
+    <url>/2020/08/30/ComputerGraphics5/</url>
     
-    <content type="html"><![CDATA[<hr><p>title: 计算机图形学2 —— 光栅化<br>tags: [计算机图形学, 光栅化]<br>categories: [GAMES101]<br>index_img: /images/graphics2/graphics2_banner.jpeg<br>date: 2020-08-12 21:09:11</p><h2 id="math-true"><a href="#math-true" class="headerlink" title="math: true"></a>math: true</h2>]]></content>
+    <content type="html"><![CDATA[]]></content>
     
     
+    <categories>
+      
+      <category>GAMES101</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机图形学</tag>
+      
+      <tag>反走样</tag>
+      
+    </tags>
     
   </entry>
   
   
   
   <entry>
-    <title></title>
-    <link href="/2020/08/16/ComputerGraphics5/"/>
-    <url>/2020/08/16/ComputerGraphics5/</url>
+    <title>计算机图形学4 ——  光栅化</title>
+    <link href="/2020/08/22/ComputerGraphics4/"/>
+    <url>/2020/08/22/ComputerGraphics4/</url>
     
-    <content type="html"><![CDATA[<hr><p>title: 计算机图形学2 —— 反走样和Z-Buffer算法<br>tags: [计算机图形学, 反走样]<br>categories: [GAMES101]<br>index_img: /images/graphics2/graphics2_banner.jpeg<br>date: 2020-08-12 21:09:11</p><h2 id="math-true"><a href="#math-true" class="headerlink" title="math: true"></a>math: true</h2>]]></content>
+    <content type="html"><![CDATA[]]></content>
     
     
+    <categories>
+      
+      <category>GAMES101</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机图形学</tag>
+      
+      <tag>光栅化</tag>
+      
+    </tags>
     
   </entry>
   
   
   
   <entry>
-    <title></title>
+    <title>计算机图形学3 —— 视图变换</title>
     <link href="/2020/08/16/ComputerGraphics3/"/>
     <url>/2020/08/16/ComputerGraphics3/</url>
     
-    <content type="html"><![CDATA[<hr><p>title: 计算机图形学2 —— 视图变换<br>tags: [计算机图形学, 投影，视图变换]<br>categories: [GAMES101]<br>index_img: /images/graphics2/graphics2_banner.jpeg<br>date: 2020-08-12 21:09:11</p><h2 id="math-true"><a href="#math-true" class="headerlink" title="math: true"></a>math: true</h2>]]></content>
+    <content type="html"><![CDATA[<p>视图变换（viewing transform）的主要职责是将3D物体的坐标（我们取标准坐标$(x, y, z)$映射到屏幕的一个个像素点上来。它的过程可以说是比较复杂的，因为在视图变换的过程中很多因素可以决定最后成像的效果。视图变换可以分为四个过程，模型变换（modal transform）、 视角变换（view transform）、投影变换（projection transform）以及视口变换（viewport transformation）。这个过程可以拿拍照片来类比：</p><ol><li>站好位置，摆好姿势（modal transform）</li><li>找好角度，调整相机位置（view transform）</li><li>拍摄照片，将3D场景拍摄到2D的照片（projection transform &amp;&amp; viewport transformation）</li></ol><p>在拍照片的过程中我们模拟了视图变换的过程。首先是模型变换，我们需要将模型从模型坐标变换到世界坐标中来，也就是在拍照过程中让人站好姿势、摆好位置。调整相机位置，也就是调整在世界坐标中从哪个方向去观测。这个过程我们需要确定两个方向，一个方向是观测的朝向，另一个方向就是与观测朝向“向上”的方向，比如说我们朝着$-Z$方向去看，那么“向上”方向就是$Y$方向。当以上过程都完成后，我们需要将3D场景转换到2D屏幕上，就需要通过投影的方式做像素映射。</p><p><img src="/images/graphics3/graphics3_transformation.png" alt=""></p><h2 id="相机变换-view-camera-transform"><a href="#相机变换-view-camera-transform" class="headerlink" title="相机变换 view/camera transform"></a>相机变换 view/camera transform</h2><p>结合在上一篇我们讨论的绕任意轴旋转的变换推导中，我们其实可以很容易使用类似的思路来进行推导相机变换。还记得为什么在相机变换的过程中，为什么除了看向方向（look-at direction）之外表示为$g$，还需要一个“向上”的方向$（up direction）表示为$t$，有了着两个方向以及相机的位置$e$。<br>我们在根据坐标系法则就可以建立起一个三位坐标$u,v,w$。定义如下：</p><script type="math/tex; mode=display">w =  -\frac{g}{\left |\left | g \right |   \right | }</script><script type="math/tex; mode=display">u = \frac{t \times w }{ \left |\left | {t \times w} \right |   \right |  }</script><script type="math/tex; mode=display">v = w \times u</script><p><img src="/images/graphics3/graphics3_camera.png" alt=""><br>摄像机变换就可以看作将$x,y,z$坐标系转换到$u,v,w$坐标系的过程。我们将变换矩阵写作$M_{view}$，令</p><script type="math/tex; mode=display">M_{view} = R_{view}T_{view}</script><p>其中$R<em>{view}$是改变相机朝向的的变换矩阵，它的作用是使得$-Z$旋转到看向方向$u$，$Y$旋转到“向上“的方向$v$。$T</em>{view}$是移动相机位置的矩阵，是一个平移矩阵，可以被表示为：</p><script type="math/tex; mode=display">T_{view} =\begin{bmatrix}1 & 0 & 0 & -x_e\\0 & 1 & 0 & -y_e\\0 & 0 & 1 & -z_e\\0 & 0 & 0 & 1\end{bmatrix}</script><p>旋转的过程在前面的章节有提过，如果需要使用$R<em>{uvw}$变换矩阵，因此<br>M</em>{view}可以被表示为：</p><script type="math/tex; mode=display">M_{view} = \begin{bmatrix}x_u & y_u & z_u & 0\\x_v & y_v & z_v & 0\\x_w & y_w & z_w & 0\\0 & 0 & 0 & 1\end{bmatrix}\begin{bmatrix}1 & 0 & 0 & -x_e\\0 & 1 & 0 & -y_e\\0 & 0 & 1 & -z_e\\0 & 0 & 0 & 1\end{bmatrix}</script><h2 id="投影变换-pojection-transform"><a href="#投影变换-pojection-transform" class="headerlink" title="投影变换 pojection transform"></a>投影变换 pojection transform</h2><p>投影变换的过程主要是将3D的点投影到2D的屏幕上来，根据变换条件的不同，可以将投影区分为正交投影和透视投影。如下图所示展现了两种投影的变换方式和成像结果。<br><img src="/images/graphics3/graphics3_banner.png" alt=""></p><h3 id="正交投影-Orthographic-Projection-Transformation"><a href="#正交投影-Orthographic-Projection-Transformation" class="headerlink" title="正交投影 Orthographic Projection Transformation"></a>正交投影 Orthographic Projection Transformation</h3><p>正交投影很好理解，在正交投影之后图形中所有点的的相对位置都不会发生改变，可以将其看作直接将图形“压扁”，然后放置在某一平面上。<br><img src="/images/graphics3/graphic3_orthographic.png" alt=""><br>在实际渲染过程中，我们总是希望在某个空间区域来渲染图形，而非根据整个视图区域来做渲染。假设渲染发生在一个沿着$Z$轴负方向，底面（bottom）与$XY$平面平行的一个立方体。这时候可以定义左右面（left, right）以及近远面（near, far），以及上下面（top, bottom）用以下代数表示：</p><script type="math/tex; mode=display">x = l = left{\space}plane</script><script type="math/tex; mode=display">x = r = right{\space}plane</script><script type="math/tex; mode=display">y = v = bottom{\space}plane</script><script type="math/tex; mode=display">y = t = left{\space}plane</script><script type="math/tex; mode=display">z = n = near{\space}plane</script><script type="math/tex; mode=display">z = f = far{\space}plane</script><p>简单来说，正交投影的主要原理是将上述区域变换到一个”正则、规范、标准“的立方体$[-1, 1]^3$中来。这个变换过程可以分解为两个变换：</p><ol><li>将渲染盒子平移到以原点为中心的位置，即每个定点到投影平面的距离为 边长/2</li><li>将渲染盒子缩放为立方体$[-1, 1]^3$<br><img src="/images/graphics3/graphics3_orthographic_transform.png" alt=""><br>这个过程可以用变换矩阵表示为：<script type="math/tex; mode=display">M_{ortho} = \begin{bmatrix}\frac{2}{r - l} & 0 & 0 & 0\\0 & \frac{2}{t - b} & 0 & 0\\0 & 0 & \frac{2}{n - f} & 0\\0 & 0 & 0 & 1\end{bmatrix} \begin{bmatrix}1 & 0 & 0 & -\frac{r+l}{2}\\0 & 1 & 0 & -\frac{t+b}{2}\\0 & 0 & 1 & -\frac{n+f}{2}\\0 & 0 & 0 & 1\end{bmatrix}</script><h3 id="透视投影-Perspective-Projection-Transformation"><a href="#透视投影-Perspective-Projection-Transformation" class="headerlink" title="透视投影 Perspective Projection Transformation"></a>透视投影 Perspective Projection Transformation</h3>透视投影和正交投影最大的区别在于，透视投影的过程不是“平行的”，投影的线最终会相交。因为透视投影需要实现真实的透视关系，也就是相等大小的物体，处于场景近端他会显示得更大，处于场景远端它会显示得更小。对于任意一点的投影过程可以用下图来表示：<br><img src="/images/graphics3/graphic3_orthographic_point.png" alt=""><br>对于任意点$[x, y, z]$, 经过透视投影变换后到投影平面上，形成$[x^{\prime}, y^{\prime}, z^{\prime}]$。根据相似三角形法则，对于$y^{\prime}$可以得到：<script type="math/tex; mode=display">y^{\prime} = \frac{n}{z}y {\space}{\space}{\space}{\space}{\space}x^{\prime} = \frac{n}{z}x</script></li></ol>]]></content>
     
     
+    <categories>
+      
+      <category>GAMES101</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机图形学</tag>
+      
+      <tag>投影，视图变换</tag>
+      
+    </tags>
     
   </entry>
   
@@ -47,7 +89,7 @@
     <link href="/2020/08/12/ComputerGraphics2/"/>
     <url>/2020/08/12/ComputerGraphics2/</url>
     
-    <content type="html"><![CDATA[<h2 id="线性变换的组合和分解"><a href="#线性变换的组合和分解" class="headerlink" title="线性变换的组合和分解"></a>线性变换的组合和分解</h2><h3 id="线性变换的组合"><a href="#线性变换的组合" class="headerlink" title="线性变换的组合"></a>线性变换的组合</h3><p>在前文我们提到，所有的线性变换都可以扩展成为变换矩阵左乘于源坐标点的数学表示。当对一个向量应用多次变换时的数学表示则是按照顺序分别左乘变换矩阵：</p><script type="math/tex; mode=display">first, v_2 = Sv_1, then, v_3 = Rv_2</script><p>可以被表示为：</p><script type="math/tex; mode=display">v_3 = R(Sv_1)</script><p>根据矩阵计算的结合律可以推导为：</p><script type="math/tex; mode=display">v_3 = (RS)v_1</script><p>根据上面的推导可以发现一个规律，矩阵经过的两次变换$S$、$R$，可以表示为一次变换矩阵$M$，其中$M = RS$。其中矩阵乘法的顺序很重要。<br><img src="/images/graphics2/graphics2_compose.png" alt=""></p><h3 id="线性变换的分解"><a href="#线性变换的分解" class="headerlink" title="线性变换的分解"></a>线性变换的分解</h3><p>既然多个变换矩阵可以合并为同一个变换矩阵，那么一个变换矩阵也可以被分解为多个变换矩阵的乘积。利用矩阵分解知识我们知道，对于给定 $A_{n*n}$ 的方阵，如果其具有n个线性无关的特征向量，那么可以被分解为，正交矩阵与对角矩阵相乘的形式，这个过程：</p><script type="math/tex; mode=display">A = RSR^T</script><p>其中 $R$ 为特征向量组成的正交矩阵，$S$ 为其特征值组成的对角矩阵。在$n=2$的情况下，$R$ 由其特征向量 $v_1, v_2$ 组成，$R = [v_1, v_2]$。$S$的对角值分别为其特征值 $\lambda_1$、$\lambda_2$。</p><p>根据其分解出的矩阵的特点，我们可以通过几何意义来对 $A$ 进行线性变换分解，$R$ 可以看作是一个旋转变换，$S$可以看作是缩放变换，因此原变换矩阵 $A$ 被分解为以下三个步骤：</p><ol><li>将其特征向量 $v_1$ 和 $v_2$ 旋转到 $x, y$轴上即变换矩阵 $R^T$。</li><li>将变换后的矩阵进行缩放，$x, y$ 方向分别被缩放 $(\lambda_1, \lambda_2)$ 即变换矩阵$S$。</li><li>将变换后的特征向量 $v_1$ 和 $v_2$ 旋转回原来的位置即变换矩阵 $R$<br><img src="/images/graphics2/graphics2_decompose.png" alt=""></li></ol><h3 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h3><p>前文中提到了绕 $x, y, z$轴旋转的变换矩阵，根据矩阵分解和组合的特性我们可以推倒出绕任意轴旋转的变换矩阵。绕任意轴旋转可以被分解为以下三步：</p><ol><li>通过旋转矩阵$R_1^T$将矩阵的特征向量旋转到</li></ol><h2 id="齐次线性坐标"><a href="#齐次线性坐标" class="headerlink" title="齐次线性坐标"></a>齐次线性坐标</h2>]]></content>
+    <content type="html"><![CDATA[<h2 id="线性变换的组合和分解"><a href="#线性变换的组合和分解" class="headerlink" title="线性变换的组合和分解"></a>线性变换的组合和分解</h2><h3 id="线性变换的组合"><a href="#线性变换的组合" class="headerlink" title="线性变换的组合"></a>线性变换的组合</h3><p>在前文我们提到，所有的线性变换都可以扩展成为变换矩阵左乘于源坐标点的数学表示。当对一个向量应用多次变换时的数学表示则是按照顺序分别左乘变换矩阵：</p><script type="math/tex; mode=display">first, v_2 = Sv_1, then, v_3 = Rv_2</script><p>可以被表示为：</p><script type="math/tex; mode=display">v_3 = R(Sv_1)</script><p>根据矩阵计算的结合律可以推导为：</p><script type="math/tex; mode=display">v_3 = (RS)v_1</script><p>根据上面的推导可以发现一个规律，矩阵经过的两次变换$S$、$R$，可以表示为一次变换矩阵$M$，其中$M = RS$。其中矩阵乘法的顺序很重要。<br><img src="/images/graphics2/graphics2_compose.png" alt=""></p><h3 id="线性变换的分解"><a href="#线性变换的分解" class="headerlink" title="线性变换的分解"></a>线性变换的分解</h3><p>既然多个变换矩阵可以合并为同一个变换矩阵，那么一个变换矩阵也可以被分解为多个变换矩阵的乘积。利用矩阵分解知识我们知道，对于给定 $A_{n*n}$ 的方阵，如果其具有n个线性无关的特征向量，那么可以被分解为，正交矩阵与对角矩阵相乘的形式，这个过程：</p><script type="math/tex; mode=display">A = RSR^T</script><p>其中 $R$ 为特征向量组成的正交矩阵，$S$ 为其特征值组成的对角矩阵。在$n=2$的情况下，$R$ 由其特征向量 $v_1, v_2$ 组成，$R = [v_1, v_2]$。$S$的对角值分别为其特征值 $\lambda_1$、$\lambda_2$。</p><p>根据其分解出的矩阵的特点，我们可以通过几何意义来对 $A$ 进行线性变换分解，$R$ 可以看作是一个旋转变换，$S$可以看作是缩放变换，因此原变换矩阵 $A$ 被分解为以下三个步骤：</p><ol><li>将其特征向量 $v_1$ 和 $v_2$ 旋转到 $x, y$轴上即变换矩阵 $R^T$。</li><li>将变换后的矩阵进行缩放，$x, y$ 方向分别被缩放 $(\lambda_1, \lambda_2)$ 即变换矩阵$S$。</li><li>将变换后的特征向量 $v_1$ 和 $v_2$ 旋转回原来的位置即变换矩阵 $R$<br><img src="/images/graphics2/graphics2_decompose.png" alt=""></li></ol><h3 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h3><p>前文中提到了绕 $x, y, z$轴旋转的变换矩阵，根据矩阵分解和组合的特性我们可以推倒出绕任意轴旋转的变换矩阵。绕任意轴旋转可以被分解为以下三步：</p><ol><li>通过变换矩阵$R_{uvw}^T$将需要做旋转的向量的向量空间变换到笛卡尔坐标系中，使得原向量空间下的 $u, v ,w$ 和 $x, y, z$做对齐。</li><li>做绕 $x$ 轴的旋转，变换矩阵为标准旋转矩阵$R_x$</li><li>通过变换矩阵$R_{uvw}$将旋转后的矩阵, 在重新变换为原向量空间下的 $u, v, w$中。</li></ol><p>以上过程可以用以下公式表示：</p><script type="math/tex; mode=display">R_a = R_{uvw} R_x R_{uvw}^T</script><p>下面讨论下$R_{uvw}$这个矩阵，这里面会涉及到一部分向量空间的知识。为了方便理解，这里先不过多的讨论理论知识，按照方便理解的方式来进行讨论。假设$x, y, z$轴三个方向上的单位向量组成的矩阵：</p><script type="math/tex; mode=display">R_E = \begin{bmatrix}1 & 0 & 0\\0 & 1 & 0\\0 & 0 & 1\end{bmatrix}</script><p>这三个向量互为正交，因此当我们为其做一些线性变换后(比如说绕z轴旋转45度后再绕y轴旋转45度，然后在缩放2倍)，三个向量依旧是正交的，通过线性变换 $R<em>{uvw}^T$ 变换之后，我们可以得到正交矩阵 $R</em>{uvw}$ </p><script type="math/tex; mode=display">R_{uvw} = \begin{bmatrix}x_u & x_v & x_w\\y_u & y_v & y_w\\z_u & z_v & z_w\end{bmatrix}</script><p>下面证明上面的表达式为何能成立，假定$u = x_ux + y_uy + z_uz$，$v, w$同理，根据正交矩阵的特性，可以得到以下推倒：</p><script type="math/tex; mode=display">u  \cdot u = v \cdot v = w \cdot w = 1</script><script type="math/tex; mode=display">u \cdot v = v \cdot w = w \cdot u = 0</script><p>利用这个特性，我们可以使用变换矩阵$R_{uvw}$将u变换到x轴上：</p><script type="math/tex; mode=display">R_{uvw}u = \begin{bmatrix}x_u & x_v & x_w\\y_u & y_v & y_w\\z_u & z_v & z_w\end{bmatrix}\begin{bmatrix}x_u \\y_u \\z_u\end{bmatrix}= \begin{bmatrix}x_ux_u + y_vy_v + z_wz_w\\x_vx_u + y_vy_u + z_vy_u\\x_wx_u + y_wy_u + z_wx_u\end{bmatrix}</script><p>上式可以被化简为：</p><script type="math/tex; mode=display">R_{uvw}u = \begin{bmatrix}u \cdot u\\v \cdot u\\w \cdot u= \end{bmatrix}=\begin{bmatrix}1 \\0 \\0\end{bmatrix}= x</script><p>同理可以推导出$R<em>{uvw}v = y$以及$R</em>{uvw}w = z$<br>对于还原变换矩阵$R_{uvw}^T$同理也可以通过上述方式推导如何将坐标轴${x, y, z}$变换到$u, v, w$上去。<br>总结来看，对于任意轴的旋转可以用下列公式进行表示：</p><script type="math/tex; mode=display">R_a = R_{uvw} R_x R_{uvw}^T = \begin{bmatrix}x_u & y_u & z_u\\x_v & y_v & z_v\\x_w & y_w & z_w\end{bmatrix}\begin{bmatrix}cos\varphi & -sin\varphi & 0\\sin\varphi & cos\varphi & 0\\0 & 0 & 1\end{bmatrix}\begin{bmatrix}x_u & x_v & x_w\\y_u & y_v & y_w\\z_u & z_v & z_w\end{bmatrix}</script><h2 id="齐次坐标"><a href="#齐次坐标" class="headerlink" title="齐次坐标"></a>齐次坐标</h2><p>平移操作也是矩阵中经常会出现的情况，它变换后的坐标$x^\prime,y^\prime$可以很方便的通过公式表示:</p><script type="math/tex; mode=display">x^\prime = x + x_t</script><script type="math/tex; mode=display">y^\prime = y = y_t</script><p>但是平移变换很难通过与待变换矩阵同纬度的变换矩阵来进行表示，因为它不属于线性变换。这里需要引入其次坐标的概念，通过原本是n维的向量用一个n+1维向量来表示。比如我们原有的平面中的点$(x, y)$升纬到3D表示为：$[x, y, 1]^T$，这样就可以将平移操作表示3D中的线性变换矩阵：</p><script type="math/tex; mode=display">\begin{bmatrix}m_{11} & m_{12} & x_t\\m_{21} & m_{22} & y_t\\0 & 0 & 1\end{bmatrix}</script><p>此时再对$x^\prime,y^\prime$做计算，可以得到：</p><script type="math/tex; mode=display">\begin{bmatrix}x^\prime \\y^\prime \\1\end{bmatrix}=\begin{bmatrix}m_{11} & m_{12} & x_t\\m_{21} & m_{22} & y_t\\0 & 0 & 1\end{bmatrix}\begin{bmatrix}x \\y \\1\end{bmatrix}= \begin{bmatrix}m_{11}x + m_{12}y + x_t\\m_{21}x + m_{22}y + y_t\\1\end{bmatrix}</script><p><strong>注：在其次坐标中最后一维取值为0时，代表一个方向，取值为1时代表一个点</strong></p>]]></content>
     
     
     <categories>
@@ -99,33 +141,6 @@
   
   
   <entry>
-    <title>计算机图形学1 —— 线性变换</title>
-    <link href="/2020/08/10/ComputerGraphics1/"/>
-    <url>/2020/08/10/ComputerGraphics1/</url>
-    
-    <content type="html"><![CDATA[<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>在图形学中，图形位置形态的数学定义是坐标中的一个个坐标点的集合，因此图形的变换操作通过数学计算来进行。为了简化计算思路，通常我们会将这些变化通过线性代数的方式抽象为变换矩阵 (Transformation Marices)。一切物体的缩放，旋转，位移，都可以通过变换矩阵作用得到。当我们确定好了某种变化的变换矩阵后，可以将其应用在任何其他图形上。本文将介绍基本图形变化中如何利用变换矩阵来进行图形变换。</p><h2 id="2D线性变换"><a href="#2D线性变换" class="headerlink" title="2D线性变换"></a>2D线性变换</h2><p>在2D图形中，我们规定 $[x, y]^T$ 为图形上的任意一个点（也可以看作是一个二维向量），2D基于原点的线性变化可以被定义为向量 $[x, y]^T$ 左乘变换矩阵的数学表示：</p><script type="math/tex; mode=display">\begin{bmatrix} a_{11} & a_{12}\\ a_{21} & a_{22}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=\begin{bmatrix} a_{11}x & a_{12}y\\ a_{21}x & a_{22}y\end{bmatrix}</script><h3 id="缩放（scale）"><a href="#缩放（scale）" class="headerlink" title="缩放（scale）"></a>缩放（scale）</h3><p>缩放操作是将图形中所有点的坐标整体放大或者缩小某个数值，如下图所示的变换分别将$x, y$分别缩小了0.5:</p><p><img src="/images/graphics1/graphics1_scale.png" alt=""><br>$[x, y]^T$经过变换后表示为$[x\prime, y\prime]^T$，经过变化后的值可以表示为：</p><script type="math/tex; mode=display">x\prime = 0.5 \times x + 0 \times y</script><script type="math/tex; mode=display">y\prime = 0 \times x + 0.5 \times y</script><p>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">scale(s_x, s_y)= \begin{bmatrix} s_x & 0\\ 0 & s_y\end{bmatrix}</script><h3 id="剪切（Shear）"><a href="#剪切（Shear）" class="headerlink" title="剪切（Shear）"></a>剪切（Shear）</h3><p>剪切变换可以简单理解为将图形的一段固定，将其对端沿着固定方向拉动。以固定x轴为例：<br><img src="/images/graphics1/graphics1_shear.png" alt=""><br>所有点的$y$值保持不变，x坐标加上了对应的y值，经过变化后的值表示为：</p><script type="math/tex; mode=display">x\prime =  x + 1 \times y</script><script type="math/tex; mode=display">y\prime = 0 \times x + y</script><p>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">shearX(s)= \begin{bmatrix} 1 & s\\ 0 & 1\end{bmatrix}</script><script type="math/tex; mode=display">shearY(s)= \begin{bmatrix} 1 & 0\\ s & 1\end{bmatrix}</script><h3 id="翻转（reflection）"><a href="#翻转（reflection）" class="headerlink" title="翻转（reflection）"></a>翻转（reflection）</h3><p>翻转一般是通过将某个坐标轴的所有值取反得到的，其变换矩阵可以表示为：<br>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">reflectionY= \begin{bmatrix} -1 & 0\\ 0 & 1\end{bmatrix}</script><script type="math/tex; mode=display">reflectionX= \begin{bmatrix} 1 & 0\\ 0 & -1\end{bmatrix}</script><p>以X轴翻转为例，经过变化矩阵计算后，图形变换如下：<br><img src="/images/graphics1/graphics1_reflection.png" alt=""></p><h3 id="旋转（rotate）"><a href="#旋转（rotate）" class="headerlink" title="旋转（rotate）"></a>旋转（rotate）</h3><p>旋转的几何意义很容易理解，图形绕着原点逆时针旋转，但是数学上的变换关系并没有上述几种变换直观。为了便于理解，我们先假定图形中的一个任意向量 $\vec{a}$ ，它与x轴的夹角为$\alpha$，坐标为 $[x_a, y_a]$ 。向量的长度表示为  $r^2 = x_a^2 + y_a^2$ ，因此其坐标可以表示为：</p><script type="math/tex; mode=display">x_a = rcos\alpha</script><script type="math/tex; mode=display">y_a = rsin\alpha</script><p>当 $\vec{a}$ 旋转了任意角度 $\varphi$ 之后得到 $\vec{b}$，此时 $\vec{b}$ 与x轴的夹角为 $(\alpha + \varphi)$，坐标为$[x_b, y_b]$ 被表示为：</p><script type="math/tex; mode=display">x_b = rcos(\alpha + \varphi) = rcos\alpha cos\varphi - rsin\alpha sin\varphi</script><script type="math/tex; mode=display">y_b = rsin(\alpha + \varphi) = rsin\alpha cos\varphi + r sin\alpha sin\varphi</script><p>根据$x_a = rcos\alpha$以及$y_a = rsin\alpha$我们可以化简得到：</p><script type="math/tex; mode=display">x_b = x_a cos\varphi - y_a sin\varphi</script><script type="math/tex; mode=display">y_b = y_a cos\varphi + x_a sin\varphi</script><p>变换矩阵可以表示为：</p><script type="math/tex; mode=display">rotate(\varphi) = \begin{bmatrix} cos\varphi & -sin\varphi\\ sin\varphi & cos\varphi\end{bmatrix}</script><p>举一个简单的旋转的例子，让图形逆时针旋转$\pi/4$，变换矩阵的值为：</p><script type="math/tex; mode=display">\begin{bmatrix}cos\varphi & -sin\varphi\\sin\varphi & cos\varphi\end{bmatrix}= \begin{bmatrix}0.707 & -0.707\\0.707 & 0.707\end{bmatrix}</script><p>图形坐标经过计算后的样式如下：<br><img src="/images/graphics1/graphics1_rotate.png" alt=""></p><h2 id="3D线性变换"><a href="#3D线性变换" class="headerlink" title="3D线性变换"></a>3D线性变换</h2><p>了解了2D线性变换之后，3D线性变换的推倒思路是一致的，仅仅是多增加了一个纬度的判断罢了。</p><h3 id="缩放、剪切、翻转"><a href="#缩放、剪切、翻转" class="headerlink" title="缩放、剪切、翻转"></a>缩放、剪切、翻转</h3><p>3D缩放比较简单，直接通过2D缩放进行扩展：</p><script type="math/tex; mode=display">scale(s_x, s_y, s_z) = \begin{bmatrix}s_x & 0 & 0\\0 & s_y & 0\\0 & 0 & s_z\end{bmatrix}</script><p>3D剪切也可以通过2D剪切做类似的扩展：</p><script type="math/tex; mode=display">shearX(d_y, d_z) = \begin{bmatrix}1 & d_y & d_z\\0 & 1 & 0\\0 & 0 & 1\end{bmatrix}</script><p>3D的旋转稍稍复杂一点点，因为在3D场景下旋转可以是以原点为中心绕着任意轴进行旋转。在2D中是由x轴向y轴旋转，换算到3D空间中就是绕着z轴进行旋转(绕z轴，z的值不会发生变化，因此变换矩阵第三行没有变化)：</p><script type="math/tex; mode=display">rotateZ(\varphi) = \begin{bmatrix}cos\varphi & -sin\varphi & 0\\sin\varphi & cos\varphi & 0\\0 & 0 & 1\end{bmatrix}</script><p>绕着x轴的旋转可以理解为在2D场景下的yz平面，由y轴转向z轴(x轴的数值没有变化所以，变换矩阵第一行没有变化)：</p><script type="math/tex; mode=display">rotateX(\varphi) = \begin{bmatrix}1 & 0 & 0\\0 & cos\varphi & -sin\varphi\\0 & sin\varphi & cos\varphi\end{bmatrix}</script><p>绕着y轴的旋转可以理解为在2D场景下的xz平面，由z轴转向x轴(x轴的数值没有变化所以，变换矩阵第一行没有变化)：</p><script type="math/tex; mode=display">rotateY(\varphi) = \begin{bmatrix}cos\varphi & 0 & sin\varphi\\0 & 1 & 0\\-sin\varphi & 0  & cos\varphi\end{bmatrix}</script>]]></content>
-    
-    
-    <categories>
-      
-      <category>GAMES101</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>计算机图形学</tag>
-      
-      <tag>线性代数</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>使用latex来书写数学公式1 —— latex基础知识</title>
     <link href="/2020/08/10/latexlearning1/"/>
     <url>/2020/08/10/latexlearning1/</url>
@@ -147,6 +162,33 @@
       <tag>排版</tag>
       
       <tag>论文写作</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>计算机图形学1 —— 线性变换</title>
+    <link href="/2020/08/10/ComputerGraphics1/"/>
+    <url>/2020/08/10/ComputerGraphics1/</url>
+    
+    <content type="html"><![CDATA[<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>在图形学中，图形位置形态的数学定义是坐标中的一个个坐标点的集合，因此图形的变换操作通过数学计算来进行。为了简化计算思路，通常我们会将这些变化通过线性代数的方式抽象为变换矩阵 (Transformation Marices)。一切物体的缩放，旋转，位移，都可以通过变换矩阵作用得到。当我们确定好了某种变化的变换矩阵后，可以将其应用在任何其他图形上。本文将介绍基本图形变化中如何利用变换矩阵来进行图形变换。</p><h2 id="2D线性变换"><a href="#2D线性变换" class="headerlink" title="2D线性变换"></a>2D线性变换</h2><p>在2D图形中，我们规定 $[x, y]^T$ 为图形上的任意一个点（也可以看作是一个二维向量），2D基于原点的线性变化可以被定义为向量 $[x, y]^T$ 左乘变换矩阵的数学表示：</p><script type="math/tex; mode=display">\begin{bmatrix} a_{11} & a_{12}\\ a_{21} & a_{22}\end{bmatrix}\begin{bmatrix} x \\ y\end{bmatrix}=\begin{bmatrix} a_{11}x & a_{12}y\\ a_{21}x & a_{22}y\end{bmatrix}</script><h3 id="缩放（scale）"><a href="#缩放（scale）" class="headerlink" title="缩放（scale）"></a>缩放（scale）</h3><p>缩放操作是将图形中所有点的坐标整体放大或者缩小某个数值，如下图所示的变换分别将$x, y$分别缩小了0.5:</p><p><img src="/images/graphics1/graphics1_scale.png" alt=""><br>$[x, y]^T$经过变换后表示为$[x\prime, y\prime]^T$，经过变化后的值可以表示为：</p><script type="math/tex; mode=display">x\prime = 0.5 \times x + 0 \times y</script><script type="math/tex; mode=display">y\prime = 0 \times x + 0.5 \times y</script><p>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">scale(s_x, s_y)= \begin{bmatrix} s_x & 0\\ 0 & s_y\end{bmatrix}</script><h3 id="剪切（Shear）"><a href="#剪切（Shear）" class="headerlink" title="剪切（Shear）"></a>剪切（Shear）</h3><p>剪切变换可以简单理解为将图形的一段固定，将其对端沿着固定方向拉动。以固定x轴为例：<br><img src="/images/graphics1/graphics1_shear.png" alt=""><br>所有点的$y$值保持不变，x坐标加上了对应的y值，经过变化后的值表示为：</p><script type="math/tex; mode=display">x\prime =  x + 1 \times y</script><script type="math/tex; mode=display">y\prime = 0 \times x + y</script><p>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">shearX(s)= \begin{bmatrix} 1 & s\\ 0 & 1\end{bmatrix}</script><script type="math/tex; mode=display">shearY(s)= \begin{bmatrix} 1 & 0\\ s & 1\end{bmatrix}</script><h3 id="翻转（reflection）"><a href="#翻转（reflection）" class="headerlink" title="翻转（reflection）"></a>翻转（reflection）</h3><p>翻转一般是通过将某个坐标轴的所有值取反得到的，其变换矩阵可以表示为：<br>上述操作可以使用变换矩阵表示为：</p><script type="math/tex; mode=display">reflectionY= \begin{bmatrix} -1 & 0\\ 0 & 1\end{bmatrix}</script><script type="math/tex; mode=display">reflectionX= \begin{bmatrix} 1 & 0\\ 0 & -1\end{bmatrix}</script><p>以X轴翻转为例，经过变化矩阵计算后，图形变换如下：<br><img src="/images/graphics1/graphics1_reflection.png" alt=""></p><h3 id="旋转（rotate）"><a href="#旋转（rotate）" class="headerlink" title="旋转（rotate）"></a>旋转（rotate）</h3><p>旋转的几何意义很容易理解，图形绕着原点逆时针旋转，但是数学上的变换关系并没有上述几种变换直观。为了便于理解，我们先假定图形中的一个任意向量 $\vec{a}$ ，它与x轴的夹角为$\alpha$，坐标为 $[x_a, y_a]$ 。向量的长度表示为  $r^2 = x_a^2 + y_a^2$ ，因此其坐标可以表示为：</p><script type="math/tex; mode=display">x_a = rcos\alpha</script><script type="math/tex; mode=display">y_a = rsin\alpha</script><p>当 $\vec{a}$ 旋转了任意角度 $\varphi$ 之后得到 $\vec{b}$，此时 $\vec{b}$ 与x轴的夹角为 $(\alpha + \varphi)$，坐标为$[x_b, y_b]$ 被表示为：</p><script type="math/tex; mode=display">x_b = rcos(\alpha + \varphi) = rcos\alpha cos\varphi - rsin\alpha sin\varphi</script><script type="math/tex; mode=display">y_b = rsin(\alpha + \varphi) = rsin\alpha cos\varphi + r sin\alpha sin\varphi</script><p>根据$x_a = rcos\alpha$以及$y_a = rsin\alpha$我们可以化简得到：</p><script type="math/tex; mode=display">x_b = x_a cos\varphi - y_a sin\varphi</script><script type="math/tex; mode=display">y_b = y_a cos\varphi + x_a sin\varphi</script><p>变换矩阵可以表示为：</p><script type="math/tex; mode=display">rotate(\varphi) = \begin{bmatrix} cos\varphi & -sin\varphi\\ sin\varphi & cos\varphi\end{bmatrix}</script><p>举一个简单的旋转的例子，让图形逆时针旋转$\pi/4$，变换矩阵的值为：</p><script type="math/tex; mode=display">\begin{bmatrix}cos\varphi & -sin\varphi\\sin\varphi & cos\varphi\end{bmatrix}= \begin{bmatrix}0.707 & -0.707\\0.707 & 0.707\end{bmatrix}</script><p>图形坐标经过计算后的样式如下：<br><img src="/images/graphics1/graphics1_rotate.png" alt=""></p><h2 id="3D线性变换"><a href="#3D线性变换" class="headerlink" title="3D线性变换"></a>3D线性变换</h2><p>了解了2D线性变换之后，3D线性变换的推倒思路是一致的，仅仅是多增加了一个纬度的判断罢了。</p><h3 id="缩放、剪切、翻转"><a href="#缩放、剪切、翻转" class="headerlink" title="缩放、剪切、翻转"></a>缩放、剪切、翻转</h3><p>3D缩放比较简单，直接通过2D缩放进行扩展：</p><script type="math/tex; mode=display">scale(s_x, s_y, s_z) = \begin{bmatrix}s_x & 0 & 0\\0 & s_y & 0\\0 & 0 & s_z\end{bmatrix}</script><p>3D剪切也可以通过2D剪切做类似的扩展：</p><script type="math/tex; mode=display">shearX(d_y, d_z) = \begin{bmatrix}1 & d_y & d_z\\0 & 1 & 0\\0 & 0 & 1\end{bmatrix}</script><p>3D的旋转稍稍复杂一点点，因为在3D场景下旋转可以是以原点为中心绕着任意轴进行旋转。在2D中是由x轴向y轴旋转，换算到3D空间中就是绕着z轴进行旋转(绕z轴，z的值不会发生变化，因此变换矩阵第三行没有变化)：</p><script type="math/tex; mode=display">rotateZ(\varphi) = \begin{bmatrix}cos\varphi & -sin\varphi & 0\\sin\varphi & cos\varphi & 0\\0 & 0 & 1\end{bmatrix}</script><p>绕着x轴的旋转可以理解为在2D场景下的yz平面，由y轴转向z轴(x轴的数值没有变化所以，变换矩阵第一行没有变化)：</p><script type="math/tex; mode=display">rotateX(\varphi) = \begin{bmatrix}1 & 0 & 0\\0 & cos\varphi & -sin\varphi\\0 & sin\varphi & cos\varphi\end{bmatrix}</script><p>绕着y轴的旋转可以理解为在2D场景下的xz平面，由z轴转向x轴(x轴的数值没有变化所以，变换矩阵第一行没有变化)：</p><script type="math/tex; mode=display">rotateY(\varphi) = \begin{bmatrix}cos\varphi & 0 & sin\varphi\\0 & 1 & 0\\-sin\varphi & 0  & cos\varphi\end{bmatrix}</script>]]></content>
+    
+    
+    <categories>
+      
+      <category>GAMES101</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>计算机图形学</tag>
+      
+      <tag>线性代数</tag>
       
     </tags>
     
