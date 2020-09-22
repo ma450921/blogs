@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      0 字
+      1k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      11
        分钟
     </span>
   
@@ -204,7 +204,45 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              
+              <blockquote>
+<p>总体来说，栅格化这个术语可以用于任何将向量图形转换成位图的过程,在通常的应用中，这个术语用来表示在计算机上显示三维形状的流行渲染算法。</p>
+<p>栅格化目前是生成实时三维计算机图形最流行的算法。实时应用需要立即响应用户输入，并且通常需要至少每秒 24 帧的速率。辐射着色、光线跟踪等其它渲染技术不同，栅格化的速度非常快，但是由于它不是根据光传输的物理规律进行处理的，所以无法正确模拟许多复杂真实光照环境，只能达到足够欺骗人类眼睛的程度。</p>
+</blockquote>
+<p>以上是Wikipedia对于光栅化的解释，大致上来说，光栅化是顶点数据变换为屏幕像素数据的过程。在光栅化中，我们需要考虑如何将位置信息数据转化为像素信息数据，例如如何在屏幕上进行展示一条线、一个圆，一个三角形。如下图所示，在屏幕中实际显示的最小单位是一个像素点。如何在屏幕中绘制像素信息，或使用哪些像素值来表示图形，是光栅化需要考虑的问题。</p>
+<p>光栅化的基本过程可以用以下伪代码来表示：<br><pre><code class="hljs properties"><span class="hljs-attr">for</span> <span class="hljs-string">(T in trangels):</span>
+    <span class="hljs-attr">for</span> <span class="hljs-string">(P in pixels):</span>
+        <span class="hljs-attr">determine</span> <span class="hljs-string">if P is inside T</span></code></pre></p>
+<h2 id="像素（pixels）的表示"><a href="#像素（pixels）的表示" class="headerlink" title="像素（pixels）的表示"></a>像素（pixels）的表示</h2><p>我们使用一个整数坐标点代表一个像素，像素作为光栅化的最小单位，其尺寸是单位大小为1的正方形。其用其中心点$x, y$来表示其位置坐标。如下图所示：<br><img src="/images/graphics4/graphics4_pixels.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="直线光栅化表示"><a href="#直线光栅化表示" class="headerlink" title="直线光栅化表示"></a>直线光栅化表示</h2><p>和绘制一个点相比，绘制一条直线就需要我们关注如何通过直线中每个像素点的位置来表示这个像素点。在photoshop中绘制一条直线时，应用自动产生的像素点的位置。通过下图可以看出，在绘制一条水平或者垂直的直线的时候，只需要连续在对应方向进行绘制即可。但是当直线的斜率为$(0, \infty)$时，表示一条直线就困难很多。此时无法利用像素点直接还原这条直线，只能通过类似表示的方式来表示这条直线。如何绘制直线，演进出很多算法，下面介绍两种直线绘制算法DDA和Bresenham。<br><img src="/images/graphics4/graphics4_lines.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="DDA-Digital-differience-analyzer"><a href="#DDA-Digital-differience-analyzer" class="headerlink" title="DDA(Digital differience analyzer)"></a>DDA(Digital differience analyzer)</h3><p>DDA的绘制过程比较简单，绘制像素的位置都由直线的斜率来决定。指定直线的斜率$k$，每个像素点$X, Y$</p>
+<ol>
+<li>如果斜率$\left | k \right |  &lt; 1$，则$X = X + 1$, $Y = Y + k$</li>
+<li>如果斜率$\left | k \right |  &gt; 1$，则$X = X + 1/k$, $Y = Y + 1$<br>以上所有结果都进行四舍五入进行取整表示，DDA的绘制过程可以通过以下代码来进行表示：</li>
+</ol>
+<pre><code class="hljs cpp"><span class="hljs-comment">// calculate dx , dy</span>
+dx = X1 - X0;
+dy = Y1 - Y0;
+
+<span class="hljs-comment">// Depending upon absolute value of dx &amp; dy</span>
+<span class="hljs-comment">// choose number of steps to put pixel as</span>
+steps = <span class="hljs-built_in">abs</span>(dx) &gt; <span class="hljs-built_in">abs</span>(dy) ? <span class="hljs-built_in">abs</span>(dx) : <span class="hljs-built_in">abs</span>(dy);
+
+<span class="hljs-comment">// calculate increment in x &amp; y for each steps</span>
+Xinc = dx / (<span class="hljs-keyword">float</span>) steps;
+Yinc = dy / (<span class="hljs-keyword">float</span>) steps;
+
+<span class="hljs-comment">// Put pixel for each step</span>
+X = X0;
+Y = Y0;
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= steps; i++)
+&#123;
+    putpixel (X, Y, RED);
+    X += Xinc;
+    Y += Yinc;
+&#125;</code></pre>
+<h3 id="Bresenham"><a href="#Bresenham" class="headerlink" title="Bresenham"></a>Bresenham</h3><p>DDA算法按照直线的函数表达式来绘制，但是并不代表它的准确性和效率就高。实际上，在绘制过程中对值取四舍五入的方式不仅浪费性能，而且可能会造成绘制不准。Bresenham算法有效地解决了这些问题，它在绘制过程中，通过对两个备选绘制点的中值进行比较来决定绘制点的位置。</p>
+<p>如下图所示，在斜率$\left | k \right |  &lt; 1$的情况下，当我们绘制下一个点$(x_k+1, unknown)$时，有两个备选点$(x_k+1, y_k + 1)$以及$(x_k+1, y_k)$。这时候我们只需要找出与直线与$x = x_k + 1$相交的交点距离哪个备选点更近即可。<br><img src="/images/graphics4/graphics4_bresenham.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="图形光栅化表示"><a href="#图形光栅化表示" class="headerlink" title="图形光栅化表示"></a>图形光栅化表示</h2>
             </article>
             <hr>
             <div>
@@ -234,9 +272,9 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/08/30/ComputerGraphics5/">
+                      <a href="/2020/08/30/ComputerGraphics7/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">计算机图形学5</span>
+                        <span class="hidden-mobile">计算机图形学7 —— 渲染管线和纹理</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
