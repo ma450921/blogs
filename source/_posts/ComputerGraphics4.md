@@ -1,6 +1,6 @@
 ---
 title: 计算机图形学4 ——  光栅化
-tags: [计算机图形学, 光栅化]
+tags: [计算机图形学, 光栅化, bresenham]
 categories: [GAMES101]
 index_img: /images/graphics4/graphics4_banner.png
 date: 2020-08-22 21:09:11
@@ -58,7 +58,41 @@ for (int i = 0; i <= steps; i++)
 ### Bresenham
 DDA算法按照直线的函数表达式来绘制，但是并不代表它的准确性和效率就高。实际上，在绘制过程中对值取四舍五入的方式不仅浪费性能，而且可能会造成绘制不准。Bresenham算法有效地解决了这些问题，它在绘制过程中，通过对两个备选绘制点的中值进行比较来决定绘制点的位置。
 
-如下图所示，在斜率$\left | k \right |  < 1$的情况下，当我们绘制下一个点$(x_k+1, unknown)$时，有两个备选点$(x_k+1, y_k + 1)$以及$(x_k+1, y_k)$。这时候我们只需要找出与直线与$x = x_k + 1$相交的交点距离哪个备选点更近即可。
+如下图所示，在斜率 $\left | k \right |  < 1$ 的情况下，当我们绘制下一个点 $(x_k+1, unknown)$ 时，有两个备选点 $(x_k+1, y_k + 1)$ 以及 $(x_k+1, y_k)$ 。这时候我们只需要找出与直线与 $x = x_k + 1$ 相交的交点距离哪个备选点更近即可。
 ![](/images/graphics4/graphics4_bresenham.png)
+观察实际$y$的增长值$y_d$，如果$y_d > 0.5$，则取上面的点，否则取下面的点。实际Bresenham过程也比较简单，但是这里比较涉及到了浮点数$0.5$的计算，性能会退化地和DDA一致。为了避免使用浮点数计算，使用了一种比较巧妙的计算方法。在以下两个条件下做讨论：
+1. 所有的直线的斜率$k\in(0,1)$
+2. $x_1 < x_2$ 且 $y_1 < y_2$
 
+此时，每次绘制像素时：
+1. $X$方向都会向右移动一格
+2. 为了得到$Y$方向的增长值，先计算 $\Delta{y} = (y_2 - y_1)$ $\Delta{x} =(x_2 - x_1)$，根据斜率的性质，可以得出 $\Delta{y} = k\Delta{x}$ 
+3. 当 $y$ 增长1个单位时，$x$ 需要增长$1/k$个单位
+4. 我们规定 $2\Delta{y} - \Delta{x}$ 为初始判定值$d$，每次绘制时$d += 2\Delta{y}$
+5. 当 $d >= 0$的时候，说明$Y$轴方向的增长量超过了1，令$y + 1$，然后将$d - 2\Delta{x}$。
+
+以下是代码表示:
+
+``` cpp
+void bresenham(int x1, int y1, int x2, int y2) { 
+    int m_new = 2 * (y2 - y1); 
+    int slope_error_new = m_new - (x2 - x1); 
+    for (int x = x1, y = y1; x <= x2; x++) 
+    { 
+        cout << "(" << x << "," << y << ")\n"; 
+
+        // Add slope to increment angle formed 
+        slope_error_new += m_new; 
+
+        // Slope error reached limit, time to 
+        // increment y and update slope error. 
+        if (slope_error_new >= 0) 
+        { 
+            y++; 
+            slope_error_new  -= 2 * (x2 - x1); 
+        } 
+    } 
+}
+```
 ## 图形光栅化表示
+
