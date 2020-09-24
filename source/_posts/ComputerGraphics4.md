@@ -95,4 +95,12 @@ void bresenham(int x1, int y1, int x2, int y2) {
 }
 ```
 ## 图形光栅化表示
+下面以三角形为例，介绍图形的光栅化过程。在图形光栅化的过程中，我们需要逐行扫描每个像素，判断像素是否处于图形之中，如果处于图形之中就将其采样。
 
+![](/images/graphics4/graphics4_sample.png)
+
+如何判断点$Q$是否在三角形内呢？对于三角形而言，确定三角形的形状和位置需要确定三角形的三个定点$P_1$、$P_2$、$P_3$。利用向量叉乘的特性，分别计算$\overrightarrow{P_1P_2} \times \overrightarrow{P_1Q}$和$\overrightarrow{P_2P_3} \times \overrightarrow{P_2Q}$以及$\overrightarrow{P_3P_1} \times \overrightarrow{P_3Q}$的值是否是相同正负号的。如果是就说明点$Q$在三角形$P_1P_2P_3$内。
+![](/images/graphics4/graphics4_inside.png)
+
+逐行扫描对于光栅化过程来说有点过于耗费性能，因为很多情况下区域内只有很小的宇哥图形。如果逐行去扫描不需要着色的像素，会造成严重的性能浪费。因此可以使用一个盒子边界来包裹需要扫描的像素区域，只在这个区域内进行光栅化的过程，大幅提升光栅化的性能。这个特性实际上适用于很多图形学的场景，比如碰撞检测、抗锯齿。
+![](/images/graphics4/graphics4_bound_box.png)
