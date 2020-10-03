@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="问解几何">
   <meta name="keywords" content="">
-  <title>计算机图形学5 —— 反走样 - Hexo</title>
+  <title>计算机图形学4 ——  光栅化 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-08-30 17:09">
-      2020年8月30日 下午
+    <time datetime="2020-09-01 21:09">
+      2020年9月1日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      12 字
+      1.7k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      20
        分钟
     </span>
   
@@ -204,7 +204,81 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <h2 id="走样及其原因"><a href="#走样及其原因" class="headerlink" title="走样及其原因"></a>走样及其原因</h2><h2 id="反走样原理"><a href="#反走样原理" class="headerlink" title="反走样原理"></a>反走样原理</h2><h2 id="MSAA"><a href="#MSAA" class="headerlink" title="MSAA"></a>MSAA</h2><h2 id="SSAA"><a href="#SSAA" class="headerlink" title="SSAA"></a>SSAA</h2><h2 id="FXAA"><a href="#FXAA" class="headerlink" title="FXAA"></a>FXAA</h2><h2 id="MLAA"><a href="#MLAA" class="headerlink" title="MLAA"></a>MLAA</h2><h2 id="SMAA"><a href="#SMAA" class="headerlink" title="SMAA"></a>SMAA</h2><h2 id="TXAA"><a href="#TXAA" class="headerlink" title="TXAA"></a>TXAA</h2><h2 id="DLSS"><a href="#DLSS" class="headerlink" title="DLSS"></a>DLSS</h2>
+              <blockquote>
+<p>总体来说，栅格化这个术语可以用于任何将向量图形转换成位图的过程,在通常的应用中，这个术语用来表示在计算机上显示三维形状的流行渲染算法。</p>
+<p>栅格化目前是生成实时三维计算机图形最流行的算法。实时应用需要立即响应用户输入，并且通常需要至少每秒 24 帧的速率。辐射着色、光线跟踪等其它渲染技术不同，栅格化的速度非常快，但是由于它不是根据光传输的物理规律进行处理的，所以无法正确模拟许多复杂真实光照环境，只能达到足够欺骗人类眼睛的程度。</p>
+</blockquote>
+<p>以上是Wikipedia对于光栅化的解释，大致上来说，光栅化是顶点数据变换为屏幕像素数据的过程。在光栅化中，我们需要考虑如何将位置信息数据转化为像素信息数据，例如如何在屏幕上进行展示一条线、一个圆，一个三角形。如下图所示，在屏幕中实际显示的最小单位是一个像素点。如何在屏幕中绘制像素信息，或使用哪些像素值来表示图形，是光栅化需要考虑的问题。</p>
+<p>光栅化的基本过程可以用以下伪代码来表示：<br><pre><code class="hljs properties"><span class="hljs-attr">for</span> <span class="hljs-string">(T in trangels):</span>
+    <span class="hljs-attr">for</span> <span class="hljs-string">(P in pixels):</span>
+        <span class="hljs-attr">determine</span> <span class="hljs-string">if P is inside T</span></code></pre></p>
+<h2 id="像素（pixels）的表示"><a href="#像素（pixels）的表示" class="headerlink" title="像素（pixels）的表示"></a>像素（pixels）的表示</h2><p>我们使用一个整数坐标点代表一个像素，像素作为光栅化的最小单位，其尺寸是单位大小为1的正方形。其用其中心点$x, y$来表示其位置坐标。如下图所示：<br><img src="/images/graphics4/graphics4_pixels.png" srcset="/img/loading.gif" alt=""></p>
+<h2 id="直线光栅化表示"><a href="#直线光栅化表示" class="headerlink" title="直线光栅化表示"></a>直线光栅化表示</h2><p>和绘制一个点相比，绘制一条直线就需要我们关注如何通过直线中每个像素点的位置来表示这个像素点。在photoshop中绘制一条直线时，应用自动产生的像素点的位置。通过下图可以看出，在绘制一条水平或者垂直的直线的时候，只需要连续在对应方向进行绘制即可。但是当直线的斜率为$(0, \infty)$时，表示一条直线就困难很多。此时无法利用像素点直接还原这条直线，只能通过类似表示的方式来表示这条直线。如何绘制直线，演进出很多算法，下面介绍两种直线绘制算法DDA和Bresenham。<br><img src="/images/graphics4/graphics4_lines.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="DDA-Digital-differience-analyzer"><a href="#DDA-Digital-differience-analyzer" class="headerlink" title="DDA(Digital differience analyzer)"></a>DDA(Digital differience analyzer)</h3><p>DDA的绘制过程比较简单，绘制像素的位置都由直线的斜率来决定。指定直线的斜率$k$，每个像素点$X, Y$</p>
+<ol>
+<li>如果斜率$\left | k \right |  &lt; 1$，则$X = X + 1$, $Y = Y + k$</li>
+<li>如果斜率$\left | k \right |  &gt; 1$，则$X = X + 1/k$, $Y = Y + 1$<br>以上所有结果都进行四舍五入进行取整表示，DDA的绘制过程可以通过以下代码来进行表示：</li>
+</ol>
+<pre><code class="hljs cpp"><span class="hljs-comment">// calculate dx , dy</span>
+dx = X1 - X0;
+dy = Y1 - Y0;
+
+<span class="hljs-comment">// Depending upon absolute value of dx &amp; dy</span>
+<span class="hljs-comment">// choose number of steps to put pixel as</span>
+steps = <span class="hljs-built_in">abs</span>(dx) &gt; <span class="hljs-built_in">abs</span>(dy) ? <span class="hljs-built_in">abs</span>(dx) : <span class="hljs-built_in">abs</span>(dy);
+
+<span class="hljs-comment">// calculate increment in x &amp; y for each steps</span>
+Xinc = dx / (<span class="hljs-keyword">float</span>) steps;
+Yinc = dy / (<span class="hljs-keyword">float</span>) steps;
+
+<span class="hljs-comment">// Put pixel for each step</span>
+X = X0;
+Y = Y0;
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= steps; i++)
+&#123;
+    putpixel (X, Y, RED);
+    X += Xinc;
+    Y += Yinc;
+&#125;</code></pre>
+<h3 id="Bresenham"><a href="#Bresenham" class="headerlink" title="Bresenham"></a>Bresenham</h3><p>DDA算法按照直线的函数表达式来绘制，但是并不代表它的准确性和效率就高。实际上，在绘制过程中对值取四舍五入的方式不仅浪费性能，而且可能会造成绘制不准。Bresenham算法有效地解决了这些问题，它在绘制过程中，通过对两个备选绘制点的中值进行比较来决定绘制点的位置。</p>
+<p>如下图所示，在斜率 $\left | k \right |  &lt; 1$ 的情况下，当我们绘制下一个点 $(x_k+1, unknown)$ 时，有两个备选点 $(x_k+1, y_k + 1)$ 以及 $(x_k+1, y_k)$ 。这时候我们只需要找出与直线与 $x = x_k + 1$ 相交的交点距离哪个备选点更近即可。<br><img src="/images/graphics4/graphics4_bresenham.png" srcset="/img/loading.gif" alt=""><br>观察实际$y$的增长值$y_d$，如果$y_d &gt; 0.5$，则取上面的点，否则取下面的点。实际Bresenham过程也比较简单，但是这里比较涉及到了浮点数$0.5$的计算，性能会退化地和DDA一致。为了避免使用浮点数计算，使用了一种比较巧妙的计算方法。在以下两个条件下做讨论：</p>
+<ol>
+<li>所有的直线的斜率$k\in(0,1)$</li>
+<li>$x_1 &lt; x_2$ 且 $y_1 &lt; y_2$</li>
+</ol>
+<p>此时，每次绘制像素时：</p>
+<ol>
+<li>$X$方向都会向右移动一格</li>
+<li>为了得到$Y$方向的增长值，先计算 $\Delta{y} = (y_2 - y_1)$ $\Delta{x} =(x_2 - x_1)$，根据斜率的性质，可以得出 $\Delta{y} = k\Delta{x}$ </li>
+<li>当 $y$ 增长1个单位时，$x$ 需要增长$1/k$个单位</li>
+<li>我们规定 $2\Delta{y} - \Delta{x}$ 为初始判定值$d$，每次绘制时$d += 2\Delta{y}$</li>
+<li>当 $d &gt;= 0$的时候，说明$Y$轴方向的增长量超过了1，令$y + 1$，然后将$d - 2\Delta{x}$。</li>
+</ol>
+<p>以下是代码表示:</p>
+<pre><code class="hljs cpp"><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">bresenham</span><span class="hljs-params">(<span class="hljs-keyword">int</span> x1, <span class="hljs-keyword">int</span> y1, <span class="hljs-keyword">int</span> x2, <span class="hljs-keyword">int</span> y2)</span> </span>&#123; 
+    <span class="hljs-keyword">int</span> m_new = <span class="hljs-number">2</span> * (y2 - y1); 
+    <span class="hljs-keyword">int</span> slope_error_new = m_new - (x2 - x1); 
+    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> x = x1, y = y1; x &lt;= x2; x++) 
+    &#123; 
+        <span class="hljs-built_in">cout</span> &lt;&lt; <span class="hljs-string">&quot;(&quot;</span> &lt;&lt; x &lt;&lt; <span class="hljs-string">&quot;,&quot;</span> &lt;&lt; y &lt;&lt; <span class="hljs-string">&quot;)\n&quot;</span>; 
+
+        <span class="hljs-comment">// Add slope to increment angle formed </span>
+        slope_error_new += m_new; 
+
+        <span class="hljs-comment">// Slope error reached limit, time to </span>
+        <span class="hljs-comment">// increment y and update slope error. </span>
+        <span class="hljs-keyword">if</span> (slope_error_new &gt;= <span class="hljs-number">0</span>) 
+        &#123; 
+            y++; 
+            slope_error_new  -= <span class="hljs-number">2</span> * (x2 - x1); 
+        &#125; 
+    &#125; 
+&#125;</code></pre>
+<h2 id="图形光栅化表示"><a href="#图形光栅化表示" class="headerlink" title="图形光栅化表示"></a>图形光栅化表示</h2><p>下面以三角形为例，介绍图形的光栅化过程。在图形光栅化的过程中，我们需要逐行扫描每个像素，判断像素是否处于图形之中，如果处于图形之中就将其采样。</p>
+<p><img src="/images/graphics4/graphics4_sample.png" srcset="/img/loading.gif" alt=""></p>
+<p>如何判断点$Q$是否在三角形内呢？对于三角形而言，确定三角形的形状和位置需要确定三角形的三个定点$P_1$、$P_2$、$P_3$。利用向量叉乘的特性，分别计算$\overrightarrow{P_1P_2} \times \overrightarrow{P_1Q}$和$\overrightarrow{P_2P_3} \times \overrightarrow{P_2Q}$以及$\overrightarrow{P_3P_1} \times \overrightarrow{P_3Q}$的值是否是相同正负号的。如果是就说明点$Q$在三角形$P_1P_2P_3$内。<br><img src="/images/graphics4/graphics4_inside.png" srcset="/img/loading.gif" alt=""></p>
+<p>逐行扫描对于光栅化过程来说有点过于耗费性能，因为很多情况下区域内只有很小的宇哥图形。如果逐行去扫描不需要着色的像素，会造成严重的性能浪费。因此可以使用一个盒子边界来包裹需要扫描的像素区域，只在这个区域内进行光栅化的过程，大幅提升光栅化的性能。这个特性实际上适用于很多图形学的场景，比如碰撞检测、抗锯齿。<br><img src="/images/graphics4/graphics4_bound_box.png" srcset="/img/loading.gif" alt=""></p>
+
             </article>
             <hr>
             <div>
@@ -225,7 +299,7 @@
                     
                       <a class="hover-with-bg" href="/tags/%E5%85%89%E6%A0%85%E5%8C%96/">光栅化</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%8F%8D%E8%B5%B0%E6%A0%B7/">反走样</a>
+                      <a class="hover-with-bg" href="/tags/bresenham/">bresenham</a>
                     
                   </div>
                 
@@ -236,12 +310,18 @@
                   <div class="post-prev col-6">
                     
                     
+                      <a href="/2020/09/13/ComputerGraphics5/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机图形学5 —— 反走样</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </div>
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/08/30/ComputerGraphics6/">
-                        <span class="hidden-mobile">计算机图形学6 —— 着色</span>
+                      <a href="/2020/08/24/ComputerGraphics3/">
+                        <span class="hidden-mobile">计算机图形学3 —— 视图变换</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -380,7 +460,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "计算机图形学5 —— 反走样&nbsp;",
+        "计算机图形学4 ——  光栅化&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,

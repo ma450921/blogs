@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="问解几何">
   <meta name="keywords" content="">
-  <title>计算机图形学4 ——  光栅化 - Hexo</title>
+  <title>计算机图形学2 —— 图形变换扩展 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -152,8 +152,8 @@
               
   <div class="mt-3 post-meta">
     <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-    <time datetime="2020-08-22 21:09">
-      2020年8月22日 晚上
+    <time datetime="2020-08-17 21:09">
+      2020年8月17日 晚上
     </time>
   </div>
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1k 字
+      1.5k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      11
+      18
        分钟
     </span>
   
@@ -204,45 +204,132 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <blockquote>
-<p>总体来说，栅格化这个术语可以用于任何将向量图形转换成位图的过程,在通常的应用中，这个术语用来表示在计算机上显示三维形状的流行渲染算法。</p>
-<p>栅格化目前是生成实时三维计算机图形最流行的算法。实时应用需要立即响应用户输入，并且通常需要至少每秒 24 帧的速率。辐射着色、光线跟踪等其它渲染技术不同，栅格化的速度非常快，但是由于它不是根据光传输的物理规律进行处理的，所以无法正确模拟许多复杂真实光照环境，只能达到足够欺骗人类眼睛的程度。</p>
-</blockquote>
-<p>以上是Wikipedia对于光栅化的解释，大致上来说，光栅化是顶点数据变换为屏幕像素数据的过程。在光栅化中，我们需要考虑如何将位置信息数据转化为像素信息数据，例如如何在屏幕上进行展示一条线、一个圆，一个三角形。如下图所示，在屏幕中实际显示的最小单位是一个像素点。如何在屏幕中绘制像素信息，或使用哪些像素值来表示图形，是光栅化需要考虑的问题。</p>
-<p>光栅化的基本过程可以用以下伪代码来表示：<br><pre><code class="hljs properties"><span class="hljs-attr">for</span> <span class="hljs-string">(T in trangels):</span>
-    <span class="hljs-attr">for</span> <span class="hljs-string">(P in pixels):</span>
-        <span class="hljs-attr">determine</span> <span class="hljs-string">if P is inside T</span></code></pre></p>
-<h2 id="像素（pixels）的表示"><a href="#像素（pixels）的表示" class="headerlink" title="像素（pixels）的表示"></a>像素（pixels）的表示</h2><p>我们使用一个整数坐标点代表一个像素，像素作为光栅化的最小单位，其尺寸是单位大小为1的正方形。其用其中心点$x, y$来表示其位置坐标。如下图所示：<br><img src="/images/graphics4/graphics4_pixels.png" srcset="/img/loading.gif" alt=""></p>
-<h2 id="直线光栅化表示"><a href="#直线光栅化表示" class="headerlink" title="直线光栅化表示"></a>直线光栅化表示</h2><p>和绘制一个点相比，绘制一条直线就需要我们关注如何通过直线中每个像素点的位置来表示这个像素点。在photoshop中绘制一条直线时，应用自动产生的像素点的位置。通过下图可以看出，在绘制一条水平或者垂直的直线的时候，只需要连续在对应方向进行绘制即可。但是当直线的斜率为$(0, \infty)$时，表示一条直线就困难很多。此时无法利用像素点直接还原这条直线，只能通过类似表示的方式来表示这条直线。如何绘制直线，演进出很多算法，下面介绍两种直线绘制算法DDA和Bresenham。<br><img src="/images/graphics4/graphics4_lines.png" srcset="/img/loading.gif" alt=""></p>
-<h3 id="DDA-Digital-differience-analyzer"><a href="#DDA-Digital-differience-analyzer" class="headerlink" title="DDA(Digital differience analyzer)"></a>DDA(Digital differience analyzer)</h3><p>DDA的绘制过程比较简单，绘制像素的位置都由直线的斜率来决定。指定直线的斜率$k$，每个像素点$X, Y$</p>
+              <h2 id="线性变换的组合和分解"><a href="#线性变换的组合和分解" class="headerlink" title="线性变换的组合和分解"></a>线性变换的组合和分解</h2><h3 id="线性变换的组合"><a href="#线性变换的组合" class="headerlink" title="线性变换的组合"></a>线性变换的组合</h3><p>在前文我们提到，所有的线性变换都可以扩展成为变换矩阵左乘于源坐标点的数学表示。当对一个向量应用多次变换时的数学表示则是按照顺序分别左乘变换矩阵：</p>
+<script type="math/tex; mode=display">
+first, v_2 = Sv_1, then, v_3 = Rv_2</script><p>可以被表示为：</p>
+<script type="math/tex; mode=display">
+v_3 = R(Sv_1)</script><p>根据矩阵计算的结合律可以推导为：</p>
+<script type="math/tex; mode=display">
+v_3 = (RS)v_1</script><p>根据上面的推导可以发现一个规律，矩阵经过的两次变换$S$、$R$，可以表示为一次变换矩阵$M$，其中$M = RS$。其中矩阵乘法的顺序很重要。<br><img src="/images/graphics2/graphics2_compose.png" srcset="/img/loading.gif" alt=""></p>
+<h3 id="线性变换的分解"><a href="#线性变换的分解" class="headerlink" title="线性变换的分解"></a>线性变换的分解</h3><p>既然多个变换矩阵可以合并为同一个变换矩阵，那么一个变换矩阵也可以被分解为多个变换矩阵的乘积。利用矩阵分解知识我们知道，对于给定 $A_{n*n}$ 的方阵，如果其具有n个线性无关的特征向量，那么可以被分解为，正交矩阵与对角矩阵相乘的形式，这个过程：</p>
+<script type="math/tex; mode=display">
+A = RSR^T</script><p>其中 $R$ 为特征向量组成的正交矩阵，$S$ 为其特征值组成的对角矩阵。在$n=2$的情况下，$R$ 由其特征向量 $v_1, v_2$ 组成，$R = [v_1, v_2]$。$S$的对角值分别为其特征值 $\lambda_1$、$\lambda_2$。</p>
+<p>根据其分解出的矩阵的特点，我们可以通过几何意义来对 $A$ 进行线性变换分解，$R$ 可以看作是一个旋转变换，$S$可以看作是缩放变换，因此原变换矩阵 $A$ 被分解为以下三个步骤：</p>
 <ol>
-<li>如果斜率$\left | k \right |  &lt; 1$，则$X = X + 1$, $Y = Y + k$</li>
-<li>如果斜率$\left | k \right |  &gt; 1$，则$X = X + 1/k$, $Y = Y + 1$<br>以上所有结果都进行四舍五入进行取整表示，DDA的绘制过程可以通过以下代码来进行表示：</li>
+<li>将其特征向量 $v_1$ 和 $v_2$ 旋转到 $x, y$轴上即变换矩阵 $R^T$。</li>
+<li>将变换后的矩阵进行缩放，$x, y$ 方向分别被缩放 $(\lambda_1, \lambda_2)$ 即变换矩阵$S$。</li>
+<li>将变换后的特征向量 $v_1$ 和 $v_2$ 旋转回原来的位置即变换矩阵 $R$<br><img src="/images/graphics2/graphics2_decompose.png" srcset="/img/loading.gif" alt=""></li>
 </ol>
-<pre><code class="hljs cpp"><span class="hljs-comment">// calculate dx , dy</span>
-dx = X1 - X0;
-dy = Y1 - Y0;
+<h3 id="绕任意轴旋转"><a href="#绕任意轴旋转" class="headerlink" title="绕任意轴旋转"></a>绕任意轴旋转</h3><p>前文中提到了绕 $x, y, z$轴旋转的变换矩阵，根据矩阵分解和组合的特性我们可以推倒出绕任意轴旋转的变换矩阵。绕任意轴旋转可以被分解为以下三步：</p>
+<ol>
+<li>通过变换矩阵$R_{uvw}^T$将需要做旋转的向量的向量空间变换到笛卡尔坐标系中，使得原向量空间下的 $u, v ,w$ 和 $x, y, z$做对齐。</li>
+<li>做绕 $x$ 轴的旋转，变换矩阵为标准旋转矩阵$R_x$</li>
+<li>通过变换矩阵$R_{uvw}$将旋转后的矩阵, 在重新变换为原向量空间下的 $u, v, w$中。</li>
+</ol>
+<p>以上过程可以用以下公式表示：</p>
+<script type="math/tex; mode=display">
+R_a = R_{uvw} R_x R_{uvw}^T</script><p>下面讨论下$R_{uvw}$这个矩阵，这里面会涉及到一部分向量空间的知识。为了方便理解，这里先不过多的讨论理论知识，按照方便理解的方式来进行讨论。假设$x, y, z$轴三个方向上的单位向量组成的矩阵：</p>
+<script type="math/tex; mode=display">
+R_E = 
+\begin{bmatrix}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1
+\end{bmatrix}</script><p>这三个向量互为正交，因此当我们为其做一些线性变换后(比如说绕z轴旋转45度后再绕y轴旋转45度，然后在缩放2倍)，三个向量依旧是正交的，通过线性变换 $R<em>{uvw}^T$ 变换之后，我们可以得到正交矩阵 $R</em>{uvw}$ </p>
+<script type="math/tex; mode=display">
+R_{uvw} = 
+\begin{bmatrix}
+x_u & x_v & x_w\\
+y_u & y_v & y_w\\
+z_u & z_v & z_w
+\end{bmatrix}</script><p>下面证明上面的表达式为何能成立，假定$u = x_ux + y_uy + z_uz$，$v, w$同理，根据正交矩阵的特性，可以得到以下推倒：</p>
+<script type="math/tex; mode=display">
+u  \cdot u = v \cdot v = w \cdot w = 1</script><script type="math/tex; mode=display">
+u \cdot v = v \cdot w = w \cdot u = 0</script><p>利用这个特性，我们可以使用变换矩阵$R_{uvw}$将u变换到x轴上：</p>
+<script type="math/tex; mode=display">
+R_{uvw}u = 
+\begin{bmatrix}
+x_u & x_v & x_w\\
+y_u & y_v & y_w\\
+z_u & z_v & z_w
+\end{bmatrix}
+\begin{bmatrix}
+x_u \\
+y_u \\
+z_u
+\end{bmatrix}
+= 
+\begin{bmatrix}
+x_ux_u + y_vy_v + z_wz_w\\
+x_vx_u + y_vy_u + z_vy_u\\
+x_wx_u + y_wy_u + z_wx_u
+\end{bmatrix}</script><p>上式可以被化简为：</p>
+<script type="math/tex; mode=display">
+R_{uvw}u = 
+\begin{bmatrix}
+u \cdot u\\
+v \cdot u\\
+w \cdot u
+= 
+\end{bmatrix}
+=
+\begin{bmatrix}
+1 \\
+0 \\
+0
+\end{bmatrix}
+= 
+x</script><p>同理可以推导出$R<em>{uvw}v = y$以及$R</em>{uvw}w = z$<br>对于还原变换矩阵$R_{uvw}^T$同理也可以通过上述方式推导如何将坐标轴${x, y, z}$变换到$u, v, w$上去。<br>总结来看，对于任意轴的旋转可以用下列公式进行表示：</p>
+<script type="math/tex; mode=display">
+R_a = R_{uvw} R_x R_{uvw}^T = 
+\begin{bmatrix}
+x_u & y_u & z_u\\
+x_v & y_v & z_v\\
+x_w & y_w & z_w
+\end{bmatrix}
+\begin{bmatrix}
+cos\varphi & -sin\varphi & 0\\
+sin\varphi & cos\varphi & 0\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x_u & x_v & x_w\\
+y_u & y_v & y_w\\
+z_u & z_v & z_w
+\end{bmatrix}</script><h2 id="齐次坐标"><a href="#齐次坐标" class="headerlink" title="齐次坐标"></a>齐次坐标</h2><p>平移操作也是矩阵中经常会出现的情况，它变换后的坐标$x^\prime,y^\prime$可以很方便的通过公式表示:</p>
+<script type="math/tex; mode=display">
+x^\prime = x + x_t</script><script type="math/tex; mode=display">
+y^\prime = y = y_t</script><p>但是平移变换很难通过与待变换矩阵同纬度的变换矩阵来进行表示，因为它不属于线性变换。这里需要引入其次坐标的概念，通过原本是n维的向量用一个n+1维向量来表示。比如我们原有的平面中的点$(x, y)$升纬到3D表示为：$[x, y, 1]^T$，这样就可以将平移操作表示3D中的线性变换矩阵：</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}
+m_{11} & m_{12} & x_t\\
+m_{21} & m_{22} & y_t\\
+0 & 0 & 1
+\end{bmatrix}</script><p>此时再对$x^\prime,y^\prime$做计算，可以得到：</p>
+<script type="math/tex; mode=display">
+\begin{bmatrix}
+x^\prime \\
+y^\prime \\
+1
+\end{bmatrix}
+=
+\begin{bmatrix}
+m_{11} & m_{12} & x_t\\
+m_{21} & m_{22} & y_t\\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\
+y \\
+1
+\end{bmatrix}
+= 
+\begin{bmatrix}
+m_{11}x + m_{12}y + x_t\\
+m_{21}x + m_{22}y + y_t\\
+1
+\end{bmatrix}</script><p><strong>注：在其次坐标中最后一维取值为0时，代表一个方向，取值为1时代表一个点</strong></p>
 
-<span class="hljs-comment">// Depending upon absolute value of dx &amp; dy</span>
-<span class="hljs-comment">// choose number of steps to put pixel as</span>
-steps = <span class="hljs-built_in">abs</span>(dx) &gt; <span class="hljs-built_in">abs</span>(dy) ? <span class="hljs-built_in">abs</span>(dx) : <span class="hljs-built_in">abs</span>(dy);
-
-<span class="hljs-comment">// calculate increment in x &amp; y for each steps</span>
-Xinc = dx / (<span class="hljs-keyword">float</span>) steps;
-Yinc = dy / (<span class="hljs-keyword">float</span>) steps;
-
-<span class="hljs-comment">// Put pixel for each step</span>
-X = X0;
-Y = Y0;
-<span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt;= steps; i++)
-&#123;
-    putpixel (X, Y, RED);
-    X += Xinc;
-    Y += Yinc;
-&#125;</code></pre>
-<h3 id="Bresenham"><a href="#Bresenham" class="headerlink" title="Bresenham"></a>Bresenham</h3><p>DDA算法按照直线的函数表达式来绘制，但是并不代表它的准确性和效率就高。实际上，在绘制过程中对值取四舍五入的方式不仅浪费性能，而且可能会造成绘制不准。Bresenham算法有效地解决了这些问题，它在绘制过程中，通过对两个备选绘制点的中值进行比较来决定绘制点的位置。</p>
-<p>如下图所示，在斜率$\left | k \right |  &lt; 1$的情况下，当我们绘制下一个点$(x_k+1, unknown)$时，有两个备选点$(x_k+1, y_k + 1)$以及$(x_k+1, y_k)$。这时候我们只需要找出与直线与$x = x_k + 1$相交的交点距离哪个备选点更近即可。<br><img src="/images/graphics4/graphics4_bresenham.png" srcset="/img/loading.gif" alt=""></p>
-<h2 id="图形光栅化表示"><a href="#图形光栅化表示" class="headerlink" title="图形光栅化表示"></a>图形光栅化表示</h2>
             </article>
             <hr>
             <div>
@@ -261,7 +348,7 @@ Y = Y0;
                     
                       <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/">计算机图形学</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E5%85%89%E6%A0%85%E5%8C%96/">光栅化</a>
+                      <a class="hover-with-bg" href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/">线性代数</a>
                     
                   </div>
                 
@@ -272,9 +359,9 @@ Y = Y0;
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/08/30/ComputerGraphics7/">
+                      <a href="/2020/08/24/ComputerGraphics3/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">计算机图形学7 —— 渲染管线和纹理</span>
+                        <span class="hidden-mobile">计算机图形学3 —— 视图变换</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -282,8 +369,8 @@ Y = Y0;
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/08/16/ComputerGraphics3/">
-                        <span class="hidden-mobile">计算机图形学3 —— 视图变换</span>
+                      <a href="/2020/08/11/latexlearning2/">
+                        <span class="hidden-mobile">使用latex来书写数学公式2 —— latex数学公式</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -422,7 +509,7 @@ Y = Y0;
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "计算机图形学4 ——  光栅化&nbsp;",
+        "计算机图形学2 —— 图形变换扩展&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
