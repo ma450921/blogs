@@ -57,11 +57,19 @@ The darkening or coloring of an illustration or diagram with parallel lines or a
 * $I$ 为入射光照强度，$r$ 为shading point距离光源的距离
 * $n, l$ 分别如图中所示为法线向量和入射方向
 
+### 高光
+高光项与漫反射的计算项类似，但是不同的是，漫反射的效果只和入射角度有关，与观察角度的是没有关系的。但是高光与相机的观察角度也是有关系的，在接近出射角的位置，高光最明显，在于远离出射角的位置高光几乎不可见：
+![](/images/graphics6/graphics6_Specular.png)
+
 ### 环境光
+环境光的着色过程，不依赖于任何的系数的。它只负责绘制绘制物体的轮廓形态，通常只会填充一些固定的颜色，不会考虑物体的光照效果，只是一个估计值。
+![](/images/graphics6/graphics6_Ambient.png)
+### Blinn-Phong反射模型
 
 
 
-## Blinn-Phong 反射模型
+
+
 
 ## 着色模型
 
