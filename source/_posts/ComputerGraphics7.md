@@ -1,8 +1,12 @@
 ---
 title: 计算机图形学7 —— 渲染管线和纹理 
-tags: [计算机图形学, 渲染管线, 纹理]
+tags: [计算机图形学, 渲染管线, 纹理, 重心坐标]
 categories: [GAMES101]
-index_img: /images/graphics5/graphics5_banner.jpg
+index_img: /images/graphics7/graphics7_banner.png
 date: 2020-10-03 17:09:11
 math: true
 ---
+
+## 渲染管线
+渲染管线是实时渲染的重要工具，实时渲染离不开渲染管线。图形渲染管线主要包括两个功能：一是将物体3D坐标转变为屏幕空间2D坐标，二是为屏幕每个像素点进行着色。渲染管线的一般流程如下图所示。分别是：顶点数据的输入、顶点着色器、曲面细分过程、几何着色器、图元组装、裁剪剔除、光栅化、片段着色器以及混合测试。渲染管线流程实际上就是对前文中介绍的各项技术的一个总结。其大致流程如下图：
+![](/images/graphics7/graphics7_banner.png)
