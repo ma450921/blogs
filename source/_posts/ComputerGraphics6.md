@@ -50,7 +50,7 @@ The darkening or coloring of an illustration or diagram with parallel lines or a
 另外，对于光线传播来说，传递的光线总是会随着传播的距离能量会随之衰减。以点光源向四面扩散为例，光源发射出来的能量其实是一定的，那么在任意两个圈上接受到的能量之和一定相等。而离圆心越远，圆的面积越大，单位面积所接受能量也就越弱。其到达某个点的光照强度应为：$I/r^2$，其中$I$为光源光照强度，$r$为距离。
 ![](/images/graphics6/graphics6_energy.png)
 
-结合上面的讨论，我们可以得出shading point的上大致的漫反射模型公式了：
+结合光照强度参数和漫反射的入射角度强度计算，可以得到一个计算漫反射光照强度的公式：
 ![](/images/graphics6/graphics6_diffuse_function.png)
 其中：
 * $k_d$ 为漫反射系数，可能会受到材质等影响
