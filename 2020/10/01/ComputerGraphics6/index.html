@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.2k 字
+      2.3k 字
     </span>
   
 
@@ -226,7 +226,7 @@ The darkening <span class="hljs-keyword">or </span>coloring of an illustration <
 <h3 id="漫反射"><a href="#漫反射" class="headerlink" title="漫反射"></a>漫反射</h3><p>漫反射模型也相对比较简单。理论上在漫反射模型中，无论光源的位置在任何地方，在反射面都会形成所有方向的反射光。而且在漫反射模型中，反射光的强度在任何方向上都是一致的，无论入射光的角度在任意的方向。</p>
 <p>但是漫反射能反射多少能量强度的光源与入射角有很直接的关系。假设光源的强度一定时，我们抽象出单位宽度的平行光源，假定在任意角度下，表面材质对漫反射的折射率一定。当入射角度为90度时，理论上反射面能接收被反射所有的光线。但是当反射面与入射光线有一定的夹脚时，反射面就只能接收部分反射光线。此时的光照强度，应该乘于夹角系数$cos\theta = l \cdot n$，其中$l$为入射角的方向，$n$为法线方向。<br><img src="/images/graphics6/graphics6_lambertian.png" srcset="/img/loading.gif" alt=""></p>
 <p>另外，对于光线传播来说，传递的光线总是会随着传播的距离能量会随之衰减。以点光源向四面扩散为例，光源发射出来的能量其实是一定的，那么在任意两个圈上接受到的能量之和一定相等。而离圆心越远，圆的面积越大，单位面积所接受能量也就越弱。其到达某个点的光照强度应为：$I/r^2$，其中$I$为光源光照强度，$r$为距离。<br><img src="/images/graphics6/graphics6_energy.png" srcset="/img/loading.gif" alt=""></p>
-<p>结合上面的讨论，我们可以得出shading point的上大致的漫反射模型公式了：<br><img src="/images/graphics6/graphics6_diffuse_function.png" srcset="/img/loading.gif" alt=""><br>其中：</p>
+<p>结合光照强度参数和漫反射的入射角度强度计算，可以得到一个计算漫反射光照强度的公式：<br><img src="/images/graphics6/graphics6_diffuse_function.png" srcset="/img/loading.gif" alt=""><br>其中：</p>
 <ul>
 <li>$k_d$ 为漫反射系数，可能会受到材质等影响</li>
 <li>$I$ 为入射光照强度，$r$ 为shading point距离光源的距离</li>
