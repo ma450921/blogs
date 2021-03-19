@@ -17,7 +17,7 @@
   <meta name="description" content="">
   <meta name="author" content="问解几何">
   <meta name="keywords" content="">
-  <title>计算机图形学7 —— 渲染管线 - Hexo</title>
+  <title>计算机图形学10 ——  贝塞尔曲线 - Hexo</title>
 
   <link  rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/4.4.1/css/bootstrap.min.css" />
 
@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.1k 字
+      0 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      11
+      1
        分钟
     </span>
   
@@ -204,26 +204,7 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              <h2 id="渲染管线"><a href="#渲染管线" class="headerlink" title="渲染管线"></a>渲染管线</h2><p>渲染管线是实时渲染的重要工具，实时渲染离不开渲染管线。图形渲染管线主要包括两个功能：一是将物体3D坐标转变为屏幕空间2D坐标，二是为屏幕每个像素点进行着色。渲染管线的一般流程如下图所示。分别是：顶点数据的输入、顶点着色器、曲面细分过程、几何着色器、图元组装、裁剪剔除、光栅化、片段着色器以及混合测试。渲染管线流程实际上就是对前文中介绍的各项技术的一个总结。其大致流程如下图：<br><img src="/images/graphics7/graphics7_banner.png" srcset="/img/loading.gif" alt=""></p>
-<ul>
-<li>顶点处理，即将在3D场景的顶点数据转换为2D屏幕的坐标数据（MVP过程）。</li>
-<li>三角形处理，即将顶点分割为屏幕中的渲染三角形。</li>
-<li>光栅化，也就是采样过程，确定三角形覆盖的像素。</li>
-<li>着色，主要通过着色器对像素进行颜色的绘制。</li>
-<li>帧缓冲，输出着色后的图形。</li>
-</ul>
-<h3 id="顶点处理-amp-amp-三角形处理"><a href="#顶点处理-amp-amp-三角形处理" class="headerlink" title="顶点处理 &amp;&amp; 三角形处理"></a>顶点处理 &amp;&amp; 三角形处理</h3><p><img src="/images/graphics7/graphics7_vertex.jpg" srcset="/img/loading.gif" alt=""><br>顶点处理过程实际上就是对所有顶点进行Modal、view、projection的转换，将3D的顶点信息投影到2D的屏幕上来。这一部分在本系列笔记的第2、3 部分有着较为详细的讨论。另外，顶点处理还有一个比较重要的作用就是确定像素深度，为后续着色过程中ZBuffer提供深度z值。</p>
-<p>三角形处理相对就简单很多，只需要将处理好的顶点数据分割为三角形。对于三角形而言，是几何中最简单的多边形，因此分割为三角形而非其他多边形能有效地提高分割以及渲染的性能。（当然存在一些渲染引擎以四边形作为基础的渲染多边形，以简化建模过程。）</p>
-<h3 id="光栅化"><a href="#光栅化" class="headerlink" title="光栅化"></a>光栅化</h3><p>当分割为合适的三角形之后，就需要用到我们在本系列笔记的第4部分中提到的光栅化过程。逐个对每个三角形中的每个像素进行采样，判断像素是否在三角形内。而且在光栅化这一步同时涉及到我们在系列笔记第5部分提到的走样的原理以及反走样原理和抗锯齿的过程。<br><img src="/images/graphics7/graphics7_rasterization.jpg" srcset="/img/loading.gif" alt=""></p>
-<h3 id="着色"><a href="#着色" class="headerlink" title="着色"></a>着色</h3><p>渲染管线流程中的着色，是通过着色器（shader）实现的。shader其实就是专门用来渲染图形的一种技术，通过shader，我们可以自定义GPU渲染画面的算法，使画面达到我们想要的效果。一般来说shader分为两类：</p>
-<ol>
-<li>顶点着色器（vertext shader），它的作用主要是处理顶点数据，生成裁剪空间坐标值。</li>
-<li>片段着色曲(fragment shader)，它的作用是主要用来处理三角形内每个像素的颜色值。</li>
-</ol>
-<p><img src="/images/graphics7/graphics7_shading.jpg" srcset="/img/loading.gif" alt=""><br>当着色器接收到完成光栅化后的片段时，需要对其进行着色处理。在系列笔记的第6部分我们提到了着色的过程，这一过程涉及到渲染管线中的顶点处理和片段处理。顶点着色器运行在顶点处理中。在顶点处理时就可以直接对顶点的值进行计算，比如说Gouraud Shading和phong shading，它们都会涉及到顶点颜色的处理。而片段着色器主要是用来处理图元或者说片段信息，也就是被拆分后的一个个三角形面中的像素。比如说plat shading会直接对一个片段使用同一种颜色进行着色。或者是Gouraud中通过差值的方式，对片段进行着色。</p>
-<p><img src="/images/graphics7/graphics7_zbuffer.jpg" srcset="/img/loading.gif" alt=""><br>当然，着色的过程始终是在2D平面中进行的，像素也就存在着遮挡问题。这个时候通过ZBuffer缓存，对像素深度信息进行缓存，从而确定，哪些像素点应该显示在屏幕上，哪些点被遮挡了不应该显示。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本章主要是对于可编程渲染管线的每个步骤的总结，其内容在前面笔记中都有详细的描述。可编程渲染管线是过去20年中图形学工业腾飞的基石，程序员可以有效的控制渲染过程，编程来代替原来固定的顶点处理和片元处理从而达到各种各样令人惊叹的效果。</p>
-
+              
             </article>
             <hr>
             <div>
@@ -242,7 +223,9 @@
                     
                       <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/">计算机图形学</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%B8%B2%E6%9F%93%E7%AE%A1%E7%BA%BF/">渲染管线</a>
+                      <a class="hover-with-bg" href="/tags/%E5%87%A0%E4%BD%95/">几何</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%B4%9D%E5%A1%9E%E5%B0%94%E6%9B%B2%E7%BA%BF/">贝塞尔曲线</a>
                     
                   </div>
                 
@@ -253,9 +236,9 @@
                   <div class="post-prev col-6">
                     
                     
-                      <a href="/2020/10/03/ComputerGraphics7.5/">
+                      <a href="/2020/10/03/ComputerGraphics11/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">计算机图形学7.5 —— 重心坐标和线性插值</span>
+                        <span class="hidden-mobile">计算机图形学11 —— 曲面细分</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -263,8 +246,8 @@
                   <div class="post-next col-6">
                     
                     
-                      <a href="/2020/10/03/ComputerGraphics9/">
-                        <span class="hidden-mobile">计算机图形学9 - 几何介绍</span>
+                      <a href="/2020/10/03/ComputerGraphics13/">
+                        <span class="hidden-mobile">计算机图形学13 -</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
@@ -403,7 +386,7 @@
     var typed = new Typed('#subtitle', {
       strings: [
         '  ',
-        "计算机图形学7 —— 渲染管线&nbsp;",
+        "计算机图形学10 ——  贝塞尔曲线&nbsp;",
       ],
       cursorChar: "_",
       typeSpeed: 70,
