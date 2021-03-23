@@ -163,7 +163,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      0 字
+      3k 字
     </span>
   
 
@@ -173,7 +173,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1
+      31
        分钟
     </span>
   
@@ -204,7 +204,50 @@
           <div class="post-content mx-auto" id="post">
             
             <article class="markdown-body">
-              
+              <h2 id="纹理映射"><a href="#纹理映射" class="headerlink" title="纹理映射"></a>纹理映射</h2><h3 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h3><pre><code>纹理映射（Texture Mapping），又称纹理贴图，是将纹理空间中的纹理像素映射到屏幕空间中的像素的过程。
+简单来说，就是把一幅图像贴到三维物体的表面上来增强真实感，可以和光照计算、图像混合等技术结合起来形成许多非常漂亮的效果。
+via 100°C百科
+</code></pre><p>首先我们观察下皮克斯的顽皮跳跳灯这个场景：<br><img src="/images/graphics8/texture_mapping_lamp.png" srcset="/img/loading.gif" alt=""><br>灯下玩具球的图案和桌子上木板纹路图案都是完全不同的。除此之外，球表面由于灯的照射效果呈现出了高光的样式，在部分区域反射了灯的光线。而在桌子上的木板却呈现着均匀的光线效果，没有很强的高光样式。在之前讲解 Blinn-Phong 反射模型的时候曾提到，一个点的颜色是由其漫反射系数决定的，反射什么颜色的光，人眼就能看见什么颜色。<strong>纹理映射</strong>的作用就是定义一组具有相同反射特性且颜色已经定义好的颜色图案，将其应用在已经构建好的模型之上。</p>
+<h3 id="如何实现纹理映射"><a href="#如何实现纹理映射" class="headerlink" title="如何实现纹理映射"></a>如何实现纹理映射</h3><p>那么纹理映射要怎么做呢？我们先看看，如何将三维的物体映射到二维的平面上。<br><img src="/images/graphics8/earth_mapping.png" srcset="/img/loading.gif" alt=""><br>上图的例子是一个地球仪，地球仪的模型是一个球，表面纹理即为世界地图的平面展开的图像。倘若拥有从3维 world space 到2维 Texture space 的一个映射关系，那么只需要将每个点的颜色信息即漫反射系数存储在2维的 Texture 之上，每次利用光照模型进行计算的时候根据映射关系就能查到这个点的漫反射系数是多少，所有点计算完之后，结果就像最左边的 screen space 之中，整个 Texture 被贴在了模型之上。</p>
+<p>纹理映射让造型技术变得简单很多，对于模型表面很多细节都可以通过纹理映射的方式让其映射到 Texture 上来。比如下面这个例子：<br><img src="/images/graphics8/monster.png" srcset="/img/loading.gif" alt=""><br>对于模型上的每个三角形可以映射到纹理中的每个三角形上，形成一一对应的关系，然后纹理上作出修改即可影响模型最终的渲染的颜色值。这个过程只需要在空间坐标中存储纹理坐标的值即可实现对应关系。即空间坐标$（x, y, z）$会存储纹理坐标$（u, v）$的值，从而实现纹理映射。如下图:<br><img src="/images/graphics8/monster_uv.png" srcset="/img/loading.gif" alt=""></p>
+<p>这一过程可以用伪代码进行表示：<br><img src="/images/graphics8/texture_code.png" srcset="/img/loading.gif" alt=""><br>即纹理映射过程有以下三个步骤：</p>
+<ol>
+<li>对每个光栅化的像素坐标（往往是像素中心点）进行采样</li>
+<li>利用重心坐标的方式对这个点进行插值计算计算出其uv坐标</li>
+<li>然后使用uv坐标上定义的值作为漫反射系数 $K_d$ 使用 Blinn-Phong 反射模型进行颜色取值。</li>
+</ol>
+<h3 id="纹理过小的情况"><a href="#纹理过小的情况" class="headerlink" title="纹理过小的情况"></a>纹理过小的情况</h3><p>纹理过小的问题相对容易理解，想想我们把一张100x100的纹理贴图应用在一500x500的屏幕之上必然会导致走样失真，因为屏幕空间的几个像素点对应在纹理贴图的坐标上都是集中在一个像素大小之内。那么如果仅仅是使用对应(u,v)坐标在texture贴图下最近的那个像素点，往往会造成严重的走样。<br><img src="/images/graphics8/tiny_texture.png" srcset="/img/loading.gif" alt=""><br>如上图所示，红色点为uv坐标对应的空间坐标点，黑色的为实际的空间坐标点。一个uv坐标点无法与模型的空间坐标点进行对应，如果简单的进行坐标取整将其映射到最近的一个坐标上会导致出现严重的走样效果。这里可以用双线性插值的方法来解决这个问题。</p>
+<h3 id="双线性插值"><a href="#双线性插值" class="headerlink" title="双线性插值"></a>双线性插值</h3><p>进行双线性插值的前提条件是已知uv坐标对应的空间点的位置坐标 $（x, y）$，利用临近四个点的坐标值可以求出其对应相邻像素的偏移量$s、t$，如下图所示：<br><img src="/images/graphics8/bilinear1.png" srcset="/img/loading.gif" alt=""></p>
+<p>利用偏移量和临近点的坐标，通过线性插值的思路可以快速求出其在竖直方向的值$u_0、u_1$，如下图所示<br><img src="/images/graphics8/bilinear2.png" srcset="/img/loading.gif" alt=""></p>
+<p>同理再次利用竖直方向的线性插值法可以求出对应点的颜色值。</p>
+<p>双线性插值的方法对于纹理过小的情况处理速度和处理效果都非常好，下图是处理后的对比效果：<br><img src="/images/graphics8/bilinear3.png" srcset="/img/loading.gif" alt=""></p>
+<p>注：图中 Bicubic 方法是一种双三次插值的方法，函数 f 在点 (x, y) 的值可以通过矩形网格中最近的十六个采样点的加权平均得到，在这里需要使用两个多项式插值三次函数，每个方向使用一个。这种方法的效果要好于双线性插值，但是计算过程比较复杂。</p>
+<h3 id="纹理过大的情况（较难处理）"><a href="#纹理过大的情况（较难处理）" class="headerlink" title="纹理过大的情况（较难处理）"></a>纹理过大的情况（较难处理）</h3><p>按照常理考虑，纹理应该是越大越好，因为纹理越大对应的到每个像素的细节就会越多，图像应该是更清晰的。但是实际结果却<strong>并非如此</strong>，将过大的纹理映射到一个较小的模型上的效果如下图所示：<br><img src="/images/graphics8/huge_texture.png" srcset="/img/loading.gif" alt=""></p>
+<p>实际效果却是近处锯齿，远处摩尔纹，很反直觉地出现了严重的走样效果。经过前面反走样部分的内容可以知道，出现这样现象的愿意在于欠采样。结合这个例子我们可以这样理解：</p>
+<ol>
+<li>假定一种纹理过大的情况，在极限情况纹理非常大，然后屏幕像素非常少（只有几个）。</li>
+<li>我们需要用仅有的几个像素表示这么多的纹理信息。</li>
+<li>则屏幕坐标映射到纹理坐标上的时候，一个屏幕坐标对应了若干个纹理坐标。</li>
+<li>在这种情况下无法正确地进行采样确定屏幕坐标的颜色，所以造成了走样的现象。<br><img src="/images/graphics8/footprint.png" srcset="/img/loading.gif" alt=""></li>
+</ol>
+<p>这种现象被形象的成为屏幕像素在texture空间的footprint。如上图所示一个屏幕空间的蓝色像素点离相机越远，对应在texture空间的范围也就越大。其实也就是越来越欠采样，那么一种直观的解决方法就是Supersampling，如果一个像素点不足以代表一个区域的颜色信息，那么便把一个像素细分为更多个小的采样点不就可以解决这个问题了吗？对，确实是这样，可以看看如下图512x超采样的结果:<br><img src="/images/graphics8/ssaa.png" srcset="/img/loading.gif" alt=""></p>
+<p>但是如此效果的代价也是非常大的，计算量太大了，一个像素点被分为了512x512个采样点，计算量为原来的25万倍之多。而且这也不能从根本上解决问题，因为理论上计算量会随着纹理超过实际屏幕像素的大小而发生变化。</p>
+<h2 id="Mipmap"><a href="#Mipmap" class="headerlink" title="Mipmap"></a>Mipmap</h2><h3 id="基础定义"><a href="#基础定义" class="headerlink" title="基础定义"></a>基础定义</h3><p>既然纹理尺寸过大，那么我们缩小纹理尺寸理论上就可以解决这个问题。正如上文所提，一个采样点的颜色信息不足以代表  footprint 里一个区域的颜色信息，如果可以求出这样一个区域里面所有颜色的均值。<br>但是纹理尺寸缩小多少也是一个很难解决的问题，因为在实际使用中模型和屏幕尺寸的大小都不确定。此外在一般的三维场景中由于透视关系的存在，纹理的footprint可能会随着物体距离相机的距离而发生变化。</p>
+<p><img src="/images/graphics8/projection.png" srcset="/img/loading.gif" alt=""><br>如上图所示，近处的采样的footprint显然会比远处的小很多。因此纹理应该支持多个级别的查询。Mipmap就是这种优化纹理使用的技术，它可以一定程度上解决纹理尺寸过大的问题。</p>
+<p><img src="/images/graphics8/mipmap.png" srcset="/img/loading.gif" alt=""></p>
+<p>如上图所示level 0代表的是原始texture，也是精度最高的原始纹理，随着level的提升，每提升一级将4个相邻像素点求均值合为一个像素点，因此越高的level也就代表了更大的footprint的区域查询。接下来要做的就是根据屏幕像素的footprint大小选定不同level的texture，再进行点查询即可，而这其实就相当于在原始texture上进行了区域查询。</p>
+<h3 id="level的取值问题"><a href="#level的取值问题" class="headerlink" title="level的取值问题"></a>level的取值问题</h3><p>得到了 mipmap 之后如何选取代表精度 level 的 D 值呢？ 这里可以利用屏幕像素点来估算footprint的大小再确定D值，如下图：<br><img src="/images/graphics8/levelD.png" srcset="/img/loading.gif" alt=""><br>在屏幕空间中取当前像素点的右方和上方的两个相邻像素点(4个全取也可以)，分别查询得到这3个点对应在Texture space的坐标，计算出当前像素点与右方像素点和上方像素点在 Texture space 的距离，二者取最大值，计算公式如图中所示，那么level D 就是这个距离的 log2 值 (D = log2L) ! 这不难理解，读者可以具体取几个例子比如 L = 1，L = 2，L = 4，看看是否符合这样的计算即可。</p>
+<p>但是这里D值算出来是一个连续值，并不是一个整数，有两种对应的方法：</p>
+<p>1 四舍五入取得最近的那个 level D</p>
+<p>2 利用 D 值在向下和向上取整的两个不同level进行三线性插值</p>
+<p><img src="/images/graphics8/integerD.png" srcset="/img/loading.gif" alt=""></p>
+<p>上图是四舍五入求得的D的分布值，可以看到过度效果不好，很多区域过度效果很硬，实际展示效果也不佳。</p>
+<p>三线性插值是一个很好的解决上述问题的方法：<br><img src="/images/graphics8/trilinear.png" srcset="/img/loading.gif" alt=""></p>
+<p>如上图所示，主要思路就是基于计算出的 D 的下取整值，在level D平面和 level D+1 平面上分别进行一次双线性插值计算出采样点的值，然后再基于两个平面的比例进行一次线性插值，从而完成一次三线性插值。<br><img src="/images/graphics8/trilinearD.png" srcset="/img/loading.gif" alt=""></p>
+<p>上图是三线性插值后的D的分布情况，相较于四舍五入要好非常多，过度效果很平滑。</p>
+<h3 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h3><p>mipmap虽然能有效地解决颜色查询的问题，但是应用在我们这个例子上却出现了以下结果：<br><img src="/images/graphics8/mipmap_limitations.png" srcset="/img/loading.gif" alt=""><br>在近处展示尚可，但是在远处几乎糊成一片了，这里可以使用各向异性过滤来解决这个问题</p>
+<h3 id="各向异性过滤mipmap"><a href="#各向异性过滤mipmap" class="headerlink" title="各向异性过滤mipmap"></a>各向异性过滤mipmap</h3><p>为什么在上面的例子中，使用mipmap来处理纹理会出现这样的问题呢？其根本原因就是在mipmap中所采用的不同level的Mipmap默认的都是正方形区域的Range Query，然而真实情况并不是如此，见下图:<br><img src="/images/graphics8/screen_to_texture.png" srcset="/img/loading.gif" alt=""><br>可以清楚地看到 screen space 的像素点所对应的footprint是不同的，有长方形，甚至是不规则图形。这是因为实际场景中的透视投影的效果造成的，在实际场景渲染中会经常出现这种问题。那么针对这种情况，有的所需要的是仅仅是水平方向的高level，有的需要的仅仅是竖直方向上的高level，因此这也就启发了各向异性的过滤:<br><img src="/images/graphics8/anisotropic.png" srcset="/img/loading.gif" alt=""><br>各向异性过滤是让纹理分别在水平和竖直方向上做不同级别的像素融合，可以让不同形状的footprint映射到准确的纹理形状上。使用各向异性的效果如下，相较于简单的mipmap好了非常多！<br><img src="/images/graphics8/filter_better.png" srcset="/img/loading.gif" alt=""></p>
+
             </article>
             <hr>
             <div>
