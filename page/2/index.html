@@ -42,7 +42,7 @@
 
 
 <body>
-  <header style="height: 100vh;">
+  <header style="height: 80vh;">
     <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
   <div class="container">
     <a class="navbar-brand"
@@ -130,10 +130,10 @@
 </nav>
 
     <div class="view intro-2" id="background" parallax=true
-         style="background: url('/img/spaceBanner.jpg') no-repeat center center;
+         style="background: url('/img/ray_tracing2.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
-        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.1)">
           <div class="container text-center white-text fadeInUp">
             <span class="h2" id="subtitle">
               
@@ -142,10 +142,6 @@
             
           </div>
 
-          
-            <div class="scroll-down-bar">
-              <i class="iconfont icon-arrowdown"></i>
-            </div>
           
         </div>
       </div>
@@ -156,13 +152,63 @@
     
       <div class="container nopadding-md">
         <div class="py-5" id="board"
-          style=margin-top:0>
+          >
           
           <div class="container">
             <div class="row">
               <div class="col-12 col-md-10 m-auto">
                 
 
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/09/13/ComputerGraphics5/" target="_self">
+          <img src="/images/graphics5/graphics5_banner.jpg" srcset="/img/loading.gif" alt="计算机图形学5 —— 反走样">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/09/13/ComputerGraphics5/">计算机图形学5 —— 反走样</a>
+
+      <a href="/2020/09/13/ComputerGraphics5/" class="index-excerpt">
+        
+        
+          
+        
+        <div>走样上一节介绍图形的光栅化的过程，经过图形光栅化过程后，可以得到一个像素集合，它将表示我们想要光栅化的图形，这些点被称为采样信号（Sampled Signal）上图表示了三角形光栅化的过程，可以看到最后形成的采样信号与原信号差距还是比较大的，这种现象就是我们所说的走样(Aliasing)。它对于实际的图形成像的影响非常大，出现走样现象的图形，会在边界处出现各种情况的锯齿，这些锯齿很影响实际的成像体</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-09-13
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/GAMES101/">GAMES101</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/">计算机图形学</a>
+            
+              <a href="/tags/%E5%85%89%E6%A0%85%E5%8C%96/">光栅化</a>
+            
+              <a href="/tags/%E5%8F%8D%E8%B5%B0%E6%A0%B7/">反走样</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
 
   <div class="row mx-auto index-card">
     
@@ -373,6 +419,54 @@ v_3 = (RS)v_1根据上面的推导可以发现一个规律，矩阵经过的</di
     
     
       <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/08/10/ComputerGraphics1/" target="_self">
+          <img src="/images/graphics1/graphics1_banner.jpeg" srcset="/img/loading.gif" alt="计算机图形学1 —— 线性变换">
+        </a>
+      </div>
+    
+    <div class="col-12 col-md-8 mx-auto index-info">
+      <a class="index-header" href="/2020/08/10/ComputerGraphics1/">计算机图形学1 —— 线性变换</a>
+
+      <a href="/2020/08/10/ComputerGraphics1/" class="index-excerpt">
+        
+        
+          
+        
+        <div>摘要在图形学中，图形位置形态的数学定义是坐标中的一个个坐标点的集合，因此图形的变换操作通过数学计算来进行。为了简化计算思路，通常我们会将这些变化通过线性代数的方式抽象为变换矩阵 (Transformation Marices)。一切物体的缩放，旋转，位移，都可以通过变换矩阵作用得到。当我们确定好了某种变化的变换矩阵后，可以将其应用在任何其他图形上。本文将介绍基本图形变化中如何利用变换矩阵来进行图形</div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>&nbsp;2020-08-10
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/GAMES101/">GAMES101</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/">计算机图形学</a>
+            
+              <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/">线性代数</a>
+            
+          </div>
+        
+      </div>
+    </div>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
         <a href="/2020/08/10/latexlearning1/" target="_self">
           <img src="/images/latex/latex_head.png" srcset="/img/loading.gif" alt="使用latex来书写数学公式1 —— latex基础知识">
         </a>
@@ -412,54 +506,6 @@ v_3 = (RS)v_1根据上面的推导可以发现一个规律，矩阵经过的</di
               <a href="/tags/%E6%8E%92%E7%89%88/">排版</a>
             
               <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
-            
-          </div>
-        
-      </div>
-    </div>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/08/10/ComputerGraphics1/" target="_self">
-          <img src="/images/graphics1/graphics1_banner.jpeg" srcset="/img/loading.gif" alt="计算机图形学1 —— 线性变换">
-        </a>
-      </div>
-    
-    <div class="col-12 col-md-8 mx-auto index-info">
-      <a class="index-header" href="/2020/08/10/ComputerGraphics1/">计算机图形学1 —— 线性变换</a>
-
-      <a href="/2020/08/10/ComputerGraphics1/" class="index-excerpt">
-        
-        
-          
-        
-        <div>摘要在图形学中，图形位置形态的数学定义是坐标中的一个个坐标点的集合，因此图形的变换操作通过数学计算来进行。为了简化计算思路，通常我们会将这些变化通过线性代数的方式抽象为变换矩阵 (Transformation Marices)。一切物体的缩放，旋转，位移，都可以通过变换矩阵作用得到。当我们确定好了某种变化的变换矩阵后，可以将其应用在任何其他图形上。本文将介绍基本图形变化中如何利用变换矩阵来进行图形</div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>&nbsp;2020-08-10
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/GAMES101/">GAMES101</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%9B%BE%E5%BD%A2%E5%AD%A6/">计算机图形学</a>
-            
-              <a href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/">线性代数</a>
             
           </div>
         
