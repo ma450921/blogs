@@ -1,9 +1,9 @@
 ---
-title: 计算机图形学10 ——  贝塞尔曲线
-tags: [计算机图形学, 几何, 贝塞尔曲线]
+title: 计算机图形学10 - 几何介绍
+tags: [计算机图形学, 几何, 隐式曲面, 显式曲面]
 categories: [GAMES101]
-index_img: /images/graphics7/graphics7_banner.png
-date: 2020-10-03 17:09:11
+index_img: /images/graphics10/graphics10_banner.png
+date: 2020-11-11 23:45:22
 math: true
 ---
  

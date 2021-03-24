@@ -3,7 +3,7 @@ title: 计算机图形学5 —— 反走样
 tags: [计算机图形学, 光栅化, 反走样]
 categories: [GAMES101]
 index_img: /images/graphics5/graphics5_banner.jpg
-date: 2020-09-13 17:09:11
+date: 2020-09-13 21:17:31
 math: true
 ---
 

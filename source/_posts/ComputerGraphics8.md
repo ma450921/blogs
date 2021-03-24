@@ -3,7 +3,7 @@ title: 计算机图形学8 ——  纹理映射和Mipmap
 tags: [计算机图形学, 纹理映射, Mipmap]
 categories: [GAMES101]
 index_img: /images/graphics8/graphics8_banner.jpeg
-date: 2020-10-03 17:09:11
+date: 2020-11-1 11:12:11
 math: true
 ---
 ## 纹理映射
@@ -115,5 +115,5 @@ mipmap虽然能有效地解决颜色查询的问题，但是应用在我们这�
 ![](/images/graphics8/screen_to_texture.png)
 可以清楚地看到 screen space 的像素点所对应的footprint是不同的，有长方形，甚至是不规则图形。这是因为实际场景中的透视投影的效果造成的，在实际场景渲染中会经常出现这种问题。那么针对这种情况，有的所需要的是仅仅是水平方向的高level，有的需要的仅仅是竖直方向上的高level，因此这也就启发了各向异性的过滤:
 ![](/images/graphics8/anisotropic.png)
-各向异性就是利用
+各向异性过滤是让纹理分别在水平和竖直方向上做不同级别的像素融合，可以让不同形状的footprint映射到准确的纹理形状上。使用各向异性的效果如下，相较于简单的mipmap好了非常多！
 ![](/images/graphics8/filter_better.png)

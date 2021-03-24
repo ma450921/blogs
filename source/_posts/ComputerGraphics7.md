@@ -3,7 +3,7 @@ title: 计算机图形学7 —— 渲染管线
 tags: [计算机图形学, 渲染管线]
 categories: [GAMES101]
 index_img: /images/graphics7/graphics7_banner.png
-date: 2020-10-03 17:09:11
+date: 2020-10-10 19:13:22
 math: true
 ---
 

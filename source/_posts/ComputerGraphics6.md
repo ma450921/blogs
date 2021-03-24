@@ -3,7 +3,7 @@ title: 计算机图形学6 —— 着色
 tags: [计算机图形学, 光照, 着色, 渲染模型]
 categories: [GAMES101]
 index_img: /images/graphics6/graphics6_banner.jpg
-date: 2020-10-1 17:09:11
+date: 2020-10-1 23:23:13
 math: true
 ---
 ## 可见性和Z-buffer

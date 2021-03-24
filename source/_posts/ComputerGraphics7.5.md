@@ -3,7 +3,7 @@ title: 计算机图形学7.5 —— 重心坐标和线性插值
 tags: [计算机图形学, 重心坐标, 线性插值]
 categories: [GAMES101]
 index_img: /images/graphics7.5/graphics7.5_banner.png
-date: 2020-10-03 17:09:11
+date: 2020-10-14 23:33:11
 math: true
 ---
 

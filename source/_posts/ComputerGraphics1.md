@@ -3,7 +3,7 @@ title: 计算机图形学1 —— 线性变换
 tags: [计算机图形学, 线性代数]
 categories: [GAMES101]
 index_img: /images/graphics1/graphics1_banner.jpeg
-date: 2020-08-10 11:09:11
+date: 2020-08-10 21:49:31
 math: true
 ---
 
