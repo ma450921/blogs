@@ -4,6 +4,7 @@ tags: [计算机图形学, 光线追踪, 阴影]
 categories: [GAMES101]
 index_img: /images/graphics13/graphics13_banner.jpeg
 date: 2020-12-12 22:19:33
+math: true
 ---
 
 
